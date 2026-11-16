@@ -791,6 +791,158 @@
       .topbar-actions .button.install { padding: 6px 9px; }
     }
 
+    /* ---------- v5: overview ranges, wishlist, weekly recap ---------- */
+    .chart-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chart-top .chart-legend { margin-bottom: 0; }
+    .chart.dense .chart-label { font-size: 10px; }
+    .chart.dense .bar { width: min(8px, 36%); border-radius: 3px 3px 0 0; }
+    .chart.dense .chart-bars { gap: 1px; }
+    .chart-day.tip-left .chart-tip { left: 0; transform: translate(0, 6px); }
+    .chart-day.tip-left:hover .chart-tip, .chart-day.tip-left:focus-visible .chart-tip { transform: translate(0, 0); }
+    .chart-day.tip-right .chart-tip { left: auto; right: 0; transform: translate(0, 6px); }
+    .chart-day.tip-right:hover .chart-tip, .chart-day.tip-right:focus-visible .chart-tip { transform: translate(0, 0); }
+    .recap-link {
+      grid-column: 1 / -1; min-height: 40px; border: 1px dashed rgba(167, 139, 250, .4); border-radius: 12px;
+      color: #ddd6fe; background: rgba(167, 139, 250, .08); font-size: 13px; font-weight: 650;
+      transition: background .2s ease, transform .25s var(--ease);
+    }
+    .recap-link:hover { background: rgba(167, 139, 250, .16); transform: translateY(-2px); }
+
+    .wish-form { display: grid; grid-template-columns: minmax(0, 1fr) 140px auto; gap: 10px; }
+    .wish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-top: 6px; }
+    .wish-grid .empty-state { grid-column: 1 / -1; }
+    .wish-card {
+      display: grid; gap: 10px; padding: 16px; border: 1px solid rgba(244, 114, 182, .18); border-radius: 16px;
+      background: linear-gradient(160deg, rgba(244, 114, 182, .08), rgba(14, 22, 39, .6) 55%);
+      animation: slide-in .35s var(--ease) backwards; transition: transform .3s var(--ease), border-color .2s ease, box-shadow .3s var(--ease);
+    }
+    .wish-card:hover { transform: translateY(-4px); border-color: rgba(244, 114, 182, .4); box-shadow: 0 24px 40px -24px rgba(244, 114, 182, .45); }
+    .wish-card.ready { border-color: rgba(52, 211, 153, .35); background: linear-gradient(160deg, rgba(52, 211, 153, .12), rgba(14, 22, 39, .6) 55%); }
+    .wish-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+    .wish-name { min-width: 0; overflow-wrap: anywhere; font-size: 15px; }
+    .wish-price { flex: 0 0 auto; color: #f9a8d4; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .wish-card.ready .wish-price { color: #6ee7b7; }
+    .wish-status { color: var(--ink-2); font-size: 12.5px; }
+    .wish-track { height: 6px; overflow: hidden; border-radius: 999px; background: var(--surface-3); }
+    .wish-track div { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f472b6, #a78bfa); transition: width .8s var(--ease); }
+    .wish-card.ready .wish-track div { background: linear-gradient(90deg, #10b981, #a3e635); }
+    .wish-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .wish-actions .icon-button { margin-left: auto; }
+    .chip.buy { color: #ecfdf5; border-color: rgba(52, 211, 153, .5); background: var(--green-soft); }
+
+    .recap-card { width: min(100%, 460px); padding: 0; overflow: hidden; text-align: left; }
+    .recap-head {
+      display: grid; gap: 2px; padding: 26px 26px 22px;
+      background: radial-gradient(300px 200px at 100% 0%, rgba(244, 114, 182, .35), transparent 70%), linear-gradient(140deg, #4c1d95, #6d28d9 55%, #0e7490);
+    }
+    .recap-kicker { color: #ddd6fe; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .recap-head h2 { justify-content: flex-start; font-size: 26px; }
+    .recap-range { color: #e9d5ff; font-size: 13px; }
+    .recap-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 18px 22px 4px; }
+    .recap-stats div { padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); text-align: center; }
+    .recap-stats span { display: block; color: var(--muted); font-size: 11.5px; font-weight: 600; }
+    .recap-stats strong { display: block; margin-top: 2px; font-size: 16px; font-variant-numeric: tabular-nums; }
+    #recapIn { color: #6ee7b7; }
+    #recapOut { color: #fda4af; }
+    #recapNet.good { color: #6ee7b7; }
+    #recapNet.bad { color: #fda4af; }
+    .recap-list { display: grid; gap: 8px; margin: 0; padding: 14px 22px 4px; list-style: none; }
+    .recap-list li { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); font-size: 13.5px; animation: slide-in .4s var(--ease) backwards; }
+    .recap-list li span { font-size: 18px; }
+    .recap-card .dialog-actions { padding: 14px 22px 22px; }
+    .recap-card .dialog-actions .button { width: 100%; }
+
+    /* ---------- Visual upgrade: colour, depth and glass ---------- */
+    :root {
+      --violet: #a78bfa;
+      --violet-soft: rgba(167, 139, 250, .14);
+      --pink: #f472b6;
+      --pink-soft: rgba(244, 114, 182, .14);
+      --glass: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .012)), rgba(13, 20, 36, .72);
+    }
+    body { background: #060912; }
+    .aurora { position: fixed; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
+    .aurora span { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; opacity: .55; animation: drift 28s ease-in-out infinite alternate; }
+    .aurora span:nth-child(1) { top: -25vmax; left: -15vmax; background: radial-gradient(circle, rgba(16, 185, 129, .32), transparent 62%); }
+    .aurora span:nth-child(2) { top: -20vmax; right: -20vmax; background: radial-gradient(circle, rgba(56, 189, 248, .22), transparent 62%); animation-duration: 34s; animation-delay: -8s; }
+    .aurora span:nth-child(3) { top: 45vh; left: 35vw; background: radial-gradient(circle, rgba(139, 92, 246, .2), transparent 62%); animation-duration: 40s; animation-delay: -16s; }
+    .aurora span:nth-child(4) { bottom: -30vmax; left: -10vmax; background: radial-gradient(circle, rgba(244, 114, 182, .14), transparent 62%); animation-duration: 36s; animation-delay: -4s; }
+    .aurora::after {
+      position: absolute; inset: 0; content: "";
+      background-image: radial-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px); background-size: 26px 26px;
+      mask-image: linear-gradient(180deg, #000, transparent 80%); -webkit-mask-image: linear-gradient(180deg, #000, transparent 80%);
+    }
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(6vw, 4vh) scale(1.08); }
+      100% { transform: translate(-4vw, 8vh) scale(.95); }
+    }
+
+    /* Glass cards */
+    .panel, .account-tile, .savings-goal, .total-box, .badge, .history-item, .insight, details.backup, .auth-shell, .modal-card {
+      border-color: rgba(255, 255, 255, .07);
+      background-color: transparent;
+      background-image: var(--glass);
+      -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 24px 50px -30px rgba(0, 0, 0, .9);
+    }
+    .spot { background-image: radial-gradient(360px circle at var(--mx, 50%) var(--my, -200px), rgba(255, 255, 255, .06), transparent 60%), var(--glass); }
+
+    /* Colourful section icons + headings */
+    .h-icon { border: 0; color: #fff; box-shadow: 0 8px 18px -8px currentColor; }
+    section[aria-labelledby="quickTitle"] .h-icon { background: linear-gradient(140deg, #34d399, #059669); color: #ecfdf5; box-shadow: 0 8px 18px -8px rgba(16, 185, 129, .8); }
+    section[aria-labelledby="insightsTitle"] .h-icon { background: linear-gradient(140deg, #38bdf8, #2563eb); box-shadow: 0 8px 18px -8px rgba(56, 189, 248, .8); }
+    section[aria-labelledby="tasksTitle"] .h-icon { background: linear-gradient(140deg, #a78bfa, #7c3aed); box-shadow: 0 8px 18px -8px rgba(139, 92, 246, .8); }
+    section[aria-labelledby="notesTitle"] .h-icon { background: linear-gradient(140deg, #fbbf24, #ea580c); box-shadow: 0 8px 18px -8px rgba(251, 146, 60, .8); }
+    section[aria-labelledby="historyTitle"] .h-icon { background: linear-gradient(140deg, #22d3ee, #0891b2); box-shadow: 0 8px 18px -8px rgba(34, 211, 238, .8); }
+    section[aria-labelledby="wishlistTitle"] .h-icon { background: linear-gradient(140deg, #f472b6, #db2777); box-shadow: 0 8px 18px -8px rgba(244, 114, 182, .8); }
+    section[aria-labelledby="achievementsTitle"] .h-icon { background: linear-gradient(140deg, #fde047, #f59e0b); color: #422006; box-shadow: 0 8px 18px -8px rgba(250, 204, 21, .8); }
+    .section-heading h2 { font-size: 19px; }
+    .section-heading:hover .h-icon { color: inherit; }
+
+    /* Panels get a coloured top glow matching their section */
+    .panel { position: relative; overflow: hidden; }
+    .panel::after { position: absolute; inset: 0 0 auto; height: 2px; content: ""; opacity: .9; pointer-events: none; }
+    section[aria-labelledby="insightsTitle"] .panel::after { background: linear-gradient(90deg, transparent, #38bdf8, transparent); }
+    section[aria-labelledby="tasksTitle"] .panel::after { background: linear-gradient(90deg, transparent, #a78bfa, transparent); }
+    section[aria-labelledby="notesTitle"] .panel::after { background: linear-gradient(90deg, transparent, #fb923c, transparent); }
+    section[aria-labelledby="wishlistTitle"] .panel::after { background: linear-gradient(90deg, transparent, #f472b6, transparent); }
+    section[aria-labelledby="tasksTitle"] .panel { background-image: radial-gradient(500px 220px at 0% 0%, rgba(139, 92, 246, .1), transparent 70%), var(--glass); }
+    section[aria-labelledby="insightsTitle"] .panel { background-image: radial-gradient(600px 240px at 100% 0%, rgba(56, 189, 248, .09), transparent 70%), var(--glass); }
+    section[aria-labelledby="wishlistTitle"] .panel { background-image: radial-gradient(600px 240px at 0% 0%, rgba(244, 114, 182, .09), transparent 70%), var(--glass); }
+    section[aria-labelledby="notesTitle"] .panel { background-image: radial-gradient(500px 220px at 100% 0%, rgba(251, 146, 60, .08), transparent 70%), var(--glass); }
+
+    /* Account tiles: tinted */
+    .account-tile.savings { background-image: radial-gradient(260px 160px at 100% 0%, rgba(56, 189, 248, .2), transparent 70%), var(--glass); }
+    .account-tile.spending { background-image: radial-gradient(260px 160px at 100% 0%, rgba(52, 211, 153, .2), transparent 70%), var(--glass); }
+    .savings-goal { background-image: radial-gradient(320px 180px at 100% 0%, rgba(251, 191, 36, .12), transparent 70%), var(--glass); }
+    .income-form { background-image: radial-gradient(400px 200px at 0% 0%, rgba(52, 211, 153, .1), transparent 70%), var(--glass); }
+    .expense-form { background-image: radial-gradient(400px 200px at 0% 0%, rgba(251, 113, 133, .1), transparent 70%), var(--glass); }
+    .total-box { background-image: radial-gradient(200px 120px at 0% 0%, rgba(52, 211, 153, .12), transparent 70%), var(--glass); }
+    .total-box.spent { background-image: radial-gradient(200px 120px at 0% 0%, rgba(251, 113, 133, .12), transparent 70%), var(--glass); }
+
+    /* Tasks: violet accents */
+    .task-option { background: rgba(139, 92, 246, .06); border-color: rgba(167, 139, 250, .14); }
+    .task-option:hover { background: rgba(139, 92, 246, .12); border-color: rgba(167, 139, 250, .35); }
+    .task-option .button { color: #ddd6fe; border-color: rgba(167, 139, 250, .35); background: var(--violet-soft); }
+    .task-option .button:hover { color: #1e1033; background: var(--violet); }
+
+    /* Brand + balance card shine */
+    h1 { background: linear-gradient(90deg, #fff, #a7f3d0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .balance-card { box-shadow: 0 40px 80px -36px rgba(16, 185, 129, .7), 0 0 0 1px rgba(110, 231, 183, .15), inset 0 1px 0 rgba(255, 255, 255, .2); }
+    .balance-amount { background: linear-gradient(180deg, #fff 40%, #d1fae5); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; filter: drop-shadow(0 8px 24px rgba(2, 44, 34, .4)); }
+
+    /* Achievements & insights pop */
+    .badge.unlocked { background-image: linear-gradient(160deg, rgba(251, 191, 36, .16), transparent 60%), var(--glass); }
+    .insight { background-image: var(--glass); }
+    .history-item, .insight, .badge, .total-box { -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .history-item:hover { background-image: linear-gradient(90deg, rgba(255, 255, 255, .04), transparent), var(--glass); }
+
+    @media (max-width: 720px) {
+      .wish-form { grid-template-columns: 1fr 120px; }
+      .wish-form .button { grid-column: 1 / -1; }
+    }
+
     @media (hover: none) {
       .goal-item-actions { opacity: 1; }
     }
@@ -834,6 +986,7 @@
   </style>
 </head>
 <body>
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
   <div class="auth-screen" id="authScreen" hidden>
     <div class="auth-shell">
       <section class="auth-showcase" aria-hidden="true">
@@ -909,6 +1062,25 @@
       <div class="dialog-actions">
         <button class="button quiet" id="importNo" type="button">Start fresh</button>
         <button class="button primary" id="importYes" type="button">Use this data</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="recapDialog" hidden>
+    <div class="modal-card recap-card" role="dialog" aria-modal="true" aria-labelledby="recapTitle">
+      <div class="recap-head">
+        <span class="recap-kicker">Weekly recap</span>
+        <h2 id="recapTitle">Your week</h2>
+        <span class="recap-range" id="recapRange"></span>
+      </div>
+      <div class="recap-stats">
+        <div><span>Earned</span><strong id="recapIn">฿0</strong></div>
+        <div><span>Spent</span><strong id="recapOut">฿0</strong></div>
+        <div><span>Saved</span><strong id="recapNet">฿0</strong></div>
+      </div>
+      <ul class="recap-list" id="recapList"></ul>
+      <div class="dialog-actions">
+        <button class="button primary" id="closeRecap" type="button">Nice! 🎉</button>
       </div>
     </div>
   </div>
@@ -1099,14 +1271,21 @@
 
     <section class="section" aria-labelledby="insightsTitle">
       <div class="section-heading">
-        <h2 id="insightsTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>This week</h2>
+        <h2 id="insightsTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Overview</h2>
         <span class="section-hint" id="insightsRange"></span>
       </div>
       <div class="panel insights">
         <div class="chart-wrap">
-          <div class="chart-legend" aria-hidden="true">
-            <span><i class="key in"></i>Money in</span>
-            <span><i class="key out"></i>Money out</span>
+          <div class="chart-top">
+            <div class="tabs" role="group" aria-label="Chart range" id="insightTabs">
+              <button class="tab" type="button" data-range="week" aria-pressed="true">Week</button>
+              <button class="tab" type="button" data-range="month" aria-pressed="false">Month</button>
+              <button class="tab" type="button" data-range="half" aria-pressed="false">6 months</button>
+            </div>
+            <div class="chart-legend" aria-hidden="true">
+              <span><i class="key in"></i>Money in</span>
+              <span><i class="key out"></i>Money out</span>
+            </div>
           </div>
           <div class="chart" id="weekChart" aria-hidden="true"></div>
           <table class="sr-only" id="weekTable"><caption>Money in and out per day this week</caption></table>
@@ -1116,6 +1295,7 @@
           <div class="insight"><span>Money out</span><strong id="weekOut">฿0.00</strong></div>
           <div class="insight"><span>Net</span><strong id="weekNet">฿0.00</strong></div>
           <div class="insight"><span>Spent most on</span><strong id="weekTop">—</strong></div>
+          <button class="recap-link" id="openRecap" type="button">📊 Last week's recap</button>
         </div>
       </div>
       <div class="panel categories">
@@ -1221,6 +1401,22 @@
       </section>
     </div>
 
+    <section class="section" aria-labelledby="wishlistTitle">
+      <div class="section-heading">
+        <h2 id="wishlistTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>Wishlist</h2>
+        <span class="section-hint">Wait 7 days before buying. Still want it? Go for it.</span>
+      </div>
+      <div class="panel wishlist">
+        <form class="wish-form" id="wishForm" novalidate>
+          <input class="text-input" id="wishName" type="text" maxlength="40" placeholder="Something you want… (e.g. 🎧 Headphones)" aria-label="Wish name">
+          <input class="text-input" id="wishPrice" type="number" min="1" step="1" inputmode="decimal" placeholder="Price ฿" aria-label="Price in baht">
+          <button class="button primary" type="submit">+ Add wish</button>
+        </form>
+        <p class="message" id="wishMessage" role="status" aria-live="polite"></p>
+        <div class="wish-grid" id="wishGrid"></div>
+      </div>
+    </section>
+
     <section class="section" aria-labelledby="achievementsTitle">
       <div class="section-heading">
         <h2 id="achievementsTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></svg></span>Achievements</h2>
@@ -1275,7 +1471,7 @@
       && !String(window.FIREBASE_CONFIG.apiKey).startsWith("PASTE")) && location.protocol.startsWith("http");
     let cacheKey = STORAGE_KEY;
     function emptyData() {
-      return { accounts: { savings: 0, spending: 0 }, goals: [], taskMenu: DEFAULT_TASKS.map(task => ({ ...task })), history: [], tasks: [], notes: [], transfers: [], achievements: [] };
+      return { accounts: { savings: 0, spending: 0 }, goals: [], taskMenu: DEFAULT_TASKS.map(task => ({ ...task })), history: [], tasks: [], notes: [], transfers: [], achievements: [], wishlist: [], lastSummaryWeek: "" };
     }
 
     function cleanTaskMenu(list) {
@@ -1304,7 +1500,11 @@
         tasks: Array.isArray(saved.tasks) ? saved.tasks.filter(task => task && taskMenu.some(option => option.id === task.id)).map(task => ({ id: task.id, instanceId: String(task.instanceId || crypto.randomUUID()) })) : [],
         notes: Array.isArray(saved.notes) ? saved.notes.filter(note => note && isValidDateKey(note.date) && dateFromKey(note.date).getDay() !== 0 && typeof note.text === "string").map(note => ({ id: String(note.id || crypto.randomUUID()), date: note.date, text: note.text })) : [],
         transfers: Array.isArray(saved.transfers) ? saved.transfers.filter(transfer => transfer && isValidDateKey(transfer.weekStart) && dateFromKey(transfer.weekStart).getDay() === 1 && Array.isArray(transfer.historyIds)).map(transfer => ({ weekStart: transfer.weekStart, historyIds: transfer.historyIds.map(String) })) : [],
-        achievements: Array.isArray(saved.achievements) ? saved.achievements.map(String) : null
+        achievements: Array.isArray(saved.achievements) ? saved.achievements.map(String) : null,
+        wishlist: Array.isArray(saved.wishlist) ? saved.wishlist
+          .filter(wish => wish && typeof wish.name === "string" && wish.name.trim() && Number.isFinite(Number(wish.price)) && Number(wish.price) > 0)
+          .map(wish => ({ id: String(wish.id || crypto.randomUUID()), name: wish.name.trim().slice(0, 40), price: Number(wish.price), addedAt: Number.isNaN(new Date(wish.addedAt).getTime()) ? new Date().toISOString() : wish.addedAt })) : [],
+        lastSummaryWeek: typeof saved.lastSummaryWeek === "string" ? saved.lastSummaryWeek : ""
       };
     }
 
@@ -1408,6 +1608,7 @@
       renderInsights();
       renderCategories();
       renderSavingsGoal();
+      renderWishlist();
       renderAchievements();
       renderHistory();
       renderTasks();
@@ -1598,31 +1799,60 @@
       return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * power;
     }
 
-    // "This week" chart: money in vs out, Monday to Sunday
-    function renderInsights() {
-      const monday = mondayFor(new Date());
-      const todayKey = dateKey(new Date());
-      const days = [];
-      for (let offset = 0; offset < 7; offset++) {
-        const day = new Date(monday);
-        day.setDate(day.getDate() + offset);
-        days.push({ date: day, key: dateKey(day), moneyIn: 0, moneyOut: 0 });
+    // Overview chart: money in vs out — this week (days), this month (days) or last 6 months (months)
+    let insightRange = "week";
+    function insightBuckets() {
+      const now = new Date();
+      const todayKey = dateKey(now);
+      const buckets = [];
+      if (insightRange === "half") {
+        for (let back = 5; back >= 0; back--) {
+          const start = new Date(now.getFullYear(), now.getMonth() - back, 1);
+          const end = new Date(now.getFullYear(), now.getMonth() - back + 1, 1);
+          buckets.push({
+            start, end, current: back === 0,
+            label: back === 0 ? "This month" : start.toLocaleDateString(undefined, { month: "short" }),
+            title: start.toLocaleDateString(undefined, { month: "long", year: "numeric" })
+          });
+        }
+        return buckets;
       }
-      const byKey = Object.fromEntries(days.map(day => [day.key, day]));
+      const first = insightRange === "month" ? new Date(now.getFullYear(), now.getMonth(), 1) : mondayFor(now);
+      first.setHours(0, 0, 0, 0);
+      const count = insightRange === "month" ? new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() : 7;
+      for (let offset = 0; offset < count; offset++) {
+        const start = new Date(first);
+        start.setDate(first.getDate() + offset);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 1);
+        const day = start.getDate();
+        const current = dateKey(start) === todayKey;
+        let label = start.toLocaleDateString(undefined, { weekday: "short" });
+        if (insightRange === "month") label = day === 1 || day % 5 === 0 ? String(day) : "";
+        if (current) label = "Today";
+        buckets.push({ start, end, current, label, title: start.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" }) });
+      }
+      return buckets;
+    }
+
+    function renderInsights() {
+      const buckets = insightBuckets().map(bucket => ({ ...bucket, moneyIn: 0, moneyOut: 0 }));
+      const rangeStart = buckets[0].start;
+      const rangeEnd = buckets[buckets.length - 1].end;
       const spentBy = {};
       for (const item of data.history) {
         const created = new Date(item.createdAt);
-        if (Number.isNaN(created.getTime())) continue;
-        const day = byKey[dateKey(created)];
-        if (!day) continue;
-        if (item.kind === "income") day.moneyIn += Number(item.amount);
+        if (Number.isNaN(created.getTime()) || created < rangeStart || created >= rangeEnd) continue;
+        const bucket = buckets.find(entry => created >= entry.start && created < entry.end);
+        if (!bucket) continue;
+        if (item.kind === "income") bucket.moneyIn += Number(item.amount);
         if (item.kind === "expense") {
-          day.moneyOut += Number(item.amount);
+          bucket.moneyOut += Number(item.amount);
           spentBy[item.label] = (spentBy[item.label] || 0) + Number(item.amount);
         }
       }
-      const totalIn = days.reduce((sum, day) => sum + day.moneyIn, 0);
-      const totalOut = days.reduce((sum, day) => sum + day.moneyOut, 0);
+      const totalIn = buckets.reduce((sum, bucket) => sum + bucket.moneyIn, 0);
+      const totalOut = buckets.reduce((sum, bucket) => sum + bucket.moneyOut, 0);
       const net = totalIn - totalOut;
       const topEntry = Object.entries(spentBy).sort((a, b) => b[1] - a[1])[0];
       document.getElementById("weekIn").textContent = formatMoney(totalIn);
@@ -1631,11 +1861,17 @@
       netEl.textContent = (net < 0 ? "−" : "+") + formatMoney(Math.abs(net));
       netEl.style.color = net < 0 ? "#fda4af" : net > 0 ? "#6ee7b7" : "";
       document.getElementById("weekTop").textContent = topEntry ? topEntry[0] : "—";
-      document.getElementById("insightsRange").textContent = days[0].date.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " – " + days[6].date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      const lastDay = new Date(rangeEnd);
+      lastDay.setDate(lastDay.getDate() - 1);
+      const fmt = { month: "short", day: "numeric" };
+      document.getElementById("insightsRange").textContent = insightRange === "half"
+        ? rangeStart.toLocaleDateString(undefined, { month: "short", year: "numeric" }) + " – " + lastDay.toLocaleDateString(undefined, { month: "short", year: "numeric" })
+        : rangeStart.toLocaleDateString(undefined, fmt) + " – " + lastDay.toLocaleDateString(undefined, fmt);
 
-      const scaleTop = niceMax(Math.max(...days.map(day => Math.max(day.moneyIn, day.moneyOut))));
+      const scaleTop = niceMax(Math.max(...buckets.map(bucket => Math.max(bucket.moneyIn, bucket.moneyOut))));
       const chart = document.getElementById("weekChart");
       chart.replaceChildren();
+      chart.classList.toggle("dense", buckets.length > 12);
       const grid = document.createElement("div");
       grid.className = "chart-grid";
       [1, .5, 0].forEach(step => {
@@ -1650,14 +1886,16 @@
       chart.append(grid);
       const columns = document.createElement("div");
       columns.className = "chart-days";
+      columns.style.gridTemplateColumns = "repeat(" + buckets.length + ", minmax(0, 1fr))";
       const bars = [];
-      for (const day of days) {
+      buckets.forEach((bucket, index) => {
         const column = document.createElement("div");
-        column.className = "chart-day" + (day.key === todayKey ? " today" : "");
+        column.className = "chart-day" + (bucket.current ? " today" : "")
+          + (index < 3 ? " tip-left" : index > buckets.length - 4 ? " tip-right" : "");
         column.tabIndex = 0;
         const barWrap = document.createElement("div");
         barWrap.className = "chart-bars";
-        for (const [kind, value] of [["in", day.moneyIn], ["out", day.moneyOut]]) {
+        for (const [kind, value] of [["in", bucket.moneyIn], ["out", bucket.moneyOut]]) {
           const bar = document.createElement("div");
           bar.className = "bar " + kind + (value > 0 ? " has" : "");
           barWrap.append(bar);
@@ -1665,13 +1903,13 @@
         }
         const label = document.createElement("span");
         label.className = "chart-label";
-        label.textContent = day.key === todayKey ? "Today" : day.date.toLocaleDateString(undefined, { weekday: "short" });
+        label.textContent = bucket.label;
         const tip = document.createElement("div");
         tip.className = "chart-tip";
         const tipTitle = document.createElement("b");
-        tipTitle.textContent = day.date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+        tipTitle.textContent = bucket.title;
         tip.append(tipTitle);
-        for (const [name, value, color] of [["In", day.moneyIn, "var(--green)"], ["Out", day.moneyOut, "var(--rose)"]]) {
+        for (const [name, value, color] of [["In", bucket.moneyIn, "var(--green)"], ["Out", bucket.moneyOut, "var(--rose)"]]) {
           const row = document.createElement("div");
           const left = document.createElement("span");
           const key = document.createElement("i");
@@ -1684,25 +1922,214 @@
         }
         column.append(barWrap, label, tip);
         columns.append(column);
-      }
+      });
       chart.append(columns);
       if (totalIn === 0 && totalOut === 0) {
         const empty = document.createElement("div");
         empty.className = "chart-empty";
-        empty.textContent = "No money in or out yet this week";
+        empty.textContent = insightRange === "week" ? "No money in or out yet this week" : insightRange === "month" ? "No money in or out yet this month" : "No money in or out in the last 6 months";
         chart.append(empty);
       }
       setTimeout(() => bars.forEach(([bar, height]) => { bar.style.height = height + "%"; }), 40);
 
       const table = document.getElementById("weekTable");
+      table.querySelector("caption").textContent = "Money in and out — " + document.getElementById("insightsRange").textContent;
       table.querySelectorAll("tr").forEach(row => row.remove());
       const head = table.insertRow();
-      ["Day", "Money in", "Money out"].forEach(text => { const cell = document.createElement("th"); cell.textContent = text; head.append(cell); });
-      for (const day of days) {
+      ["Period", "Money in", "Money out"].forEach(text => { const cell = document.createElement("th"); cell.textContent = text; head.append(cell); });
+      for (const bucket of buckets) {
         const row = table.insertRow();
-        [day.date.toLocaleDateString(undefined, { weekday: "long" }), formatMoney(day.moneyIn), formatMoney(day.moneyOut)].forEach(text => { row.insertCell().textContent = text; });
+        [bucket.title, formatMoney(bucket.moneyIn), formatMoney(bucket.moneyOut)].forEach(text => { row.insertCell().textContent = text; });
       }
     }
+
+    document.querySelectorAll("#insightTabs .tab").forEach(tab => tab.addEventListener("click", () => {
+      insightRange = tab.dataset.range;
+      document.querySelectorAll("#insightTabs .tab").forEach(other => other.setAttribute("aria-pressed", String(other === tab)));
+      renderInsights();
+    }));
+
+    // Wishlist: wait 7 days before buying
+    const WISH_WAIT_DAYS = 7;
+    function renderWishlist() {
+      const grid = document.getElementById("wishGrid");
+      grid.replaceChildren();
+      if (!data.wishlist.length) {
+        grid.innerHTML = '<div class="empty-state">Add something you want. Waiting a week first stops impulse buys. 🛑</div>';
+        return;
+      }
+      const now = Date.now();
+      data.wishlist.forEach((wish, index) => {
+        const waited = (now - new Date(wish.addedAt).getTime()) / 86400000;
+        const ready = waited >= WISH_WAIT_DAYS;
+        const daysLeft = Math.max(1, Math.ceil(WISH_WAIT_DAYS - waited));
+        const affordable = data.accounts.spending >= wish.price;
+        const card = document.createElement("article");
+        card.className = "wish-card" + (ready ? " ready" : "");
+        card.style.animationDelay = index * 50 + "ms";
+        const head = document.createElement("div");
+        head.className = "wish-head";
+        const name = document.createElement("strong");
+        name.className = "wish-name";
+        name.textContent = wish.name;
+        const price = document.createElement("span");
+        price.className = "wish-price";
+        price.textContent = formatMoney(wish.price);
+        head.append(name, price);
+        const status = document.createElement("div");
+        status.className = "wish-status";
+        status.textContent = ready
+          ? (affordable ? "✅ Ready! Still want it?" : "✅ Wait's over · " + formatMoney(wish.price - data.accounts.spending) + " more needed")
+          : "🔒 Can buy in " + daysLeft + (daysLeft === 1 ? " day" : " days");
+        const track = document.createElement("div");
+        track.className = "wish-track";
+        const fill = document.createElement("div");
+        fill.style.width = Math.min(waited / WISH_WAIT_DAYS, 1) * 100 + "%";
+        track.append(fill);
+        const actions = document.createElement("div");
+        actions.className = "wish-actions";
+        const toGoal = document.createElement("button");
+        toGoal.className = "chip";
+        toGoal.type = "button";
+        toGoal.textContent = "🎯 Make it a goal";
+        toGoal.addEventListener("click", () => {
+          data.goals.push({ id: crypto.randomUUID(), name: wish.name, amount: wish.price });
+          data.wishlist = data.wishlist.filter(entry => entry.id !== wish.id);
+          saveData();
+          render();
+          toast("Goal added: " + wish.name, "good", "🎯");
+        });
+        actions.append(toGoal);
+        if (ready && affordable) {
+          const buy = document.createElement("button");
+          buy.className = "chip buy";
+          buy.type = "button";
+          buy.textContent = "🛍️ I bought it";
+          buy.addEventListener("click", () => {
+            const previous = data.accounts.spending;
+            data.accounts.spending -= wish.price;
+            addHistory(wish.name, wish.price, "expense", "🛍️", "spending");
+            data.wishlist = data.wishlist.filter(entry => entry.id !== wish.id);
+            saveData();
+            render(true);
+            announceChange(wish.price, "expense");
+            toast("Enjoy it! −" + formatMoney(wish.price), "good", "🛍️");
+            if (previous >= 0) showConfetti();
+          });
+          actions.append(buy);
+        }
+        const remove = document.createElement("button");
+        remove.className = "icon-button danger";
+        remove.type = "button";
+        remove.textContent = "✕";
+        remove.setAttribute("aria-label", "Remove " + wish.name + " from wishlist");
+        remove.addEventListener("click", () => {
+          data.wishlist = data.wishlist.filter(entry => entry.id !== wish.id);
+          saveData();
+          renderWishlist();
+          toast(waited < WISH_WAIT_DAYS ? "Skipped " + wish.name + " · " + formatMoney(wish.price) + " saved! 💪" : "Removed " + wish.name, "info", "✕");
+        });
+        actions.append(remove);
+        card.append(head, status, track, actions);
+        grid.append(card);
+      });
+    }
+    document.getElementById("wishForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const nameInput = document.getElementById("wishName");
+      const priceInput = document.getElementById("wishPrice");
+      const message = document.getElementById("wishMessage");
+      const name = nameInput.value.trim();
+      const price = Number(priceInput.value);
+      if (!name) { message.textContent = "What do you want?"; message.classList.add("error"); return; }
+      if (!Number.isFinite(price) || price <= 0) { message.textContent = "Enter the price."; message.classList.add("error"); return; }
+      data.wishlist.unshift({ id: crypto.randomUUID(), name, price, addedAt: new Date().toISOString() });
+      nameInput.value = "";
+      priceInput.value = "";
+      message.textContent = "";
+      message.classList.remove("error");
+      saveData();
+      renderWishlist();
+      toast("Added to wishlist · check back in 7 days", "info", "🔒");
+    });
+
+    // Weekly recap: shown once at the start of each new week (and on demand)
+    function weekStats(monday) {
+      const start = new Date(monday);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      const stats = { start, end, moneyIn: 0, moneyOut: 0, tasks: 0, byDay: {} };
+      for (const item of data.history) {
+        const created = new Date(item.createdAt);
+        if (Number.isNaN(created.getTime()) || created < start || created >= end) continue;
+        const key = dateKey(created);
+        if (item.kind === "income") {
+          stats.moneyIn += Number(item.amount);
+          stats.byDay[key] = (stats.byDay[key] || 0) + Number(item.amount);
+          if (item.source === "task" || item.icon === "🎉") stats.tasks++;
+        }
+        if (item.kind === "expense") stats.moneyOut += Number(item.amount);
+      }
+      stats.net = stats.moneyIn - stats.moneyOut;
+      stats.active = stats.moneyIn > 0 || stats.moneyOut > 0;
+      return stats;
+    }
+    function showRecap() {
+      const thisMonday = mondayFor(new Date());
+      const lastMonday = new Date(thisMonday);
+      lastMonday.setDate(thisMonday.getDate() - 7);
+      const weekBefore = new Date(lastMonday);
+      weekBefore.setDate(lastMonday.getDate() - 7);
+      const week = weekStats(lastMonday);
+      const prev = weekStats(weekBefore);
+      const lastSunday = new Date(week.end);
+      lastSunday.setDate(lastSunday.getDate() - 1);
+      document.getElementById("recapRange").textContent = week.start.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " – " + lastSunday.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      document.getElementById("recapIn").textContent = formatMoney(week.moneyIn);
+      document.getElementById("recapOut").textContent = formatMoney(week.moneyOut);
+      const netEl = document.getElementById("recapNet");
+      netEl.textContent = (week.net < 0 ? "−" : "+") + formatMoney(Math.abs(week.net));
+      netEl.className = week.net < 0 ? "bad" : "good";
+      const lines = [];
+      if (!week.active) lines.push(["😴", "A quiet week: nothing logged."]);
+      if (week.tasks) lines.push(["✅", week.tasks + (week.tasks === 1 ? " task done" : " tasks done")]);
+      const best = Object.entries(week.byDay).sort((a, b) => b[1] - a[1])[0];
+      if (best) lines.push(["🔥", "Best day: " + dateFromKey(best[0]).toLocaleDateString(undefined, { weekday: "long" }) + " (+" + formatMoney(best[1]) + ")"]);
+      const savedMore = week.net > prev.net;
+      if (prev.active || week.active) {
+        const diff = Math.abs(week.net - prev.net);
+        lines.push(diff < 0.005 ? ["➖", "Same as the week before"] : savedMore ? ["📈", "You saved " + formatMoney(diff) + " more than the week before!"] : ["📉", formatMoney(diff) + " less saved than the week before. You've got this."]);
+      }
+      const streak = taskStreak();
+      if (streak > 1) lines.push(["⚡", "Current task streak: " + streak + " days"]);
+      const list = document.getElementById("recapList");
+      list.replaceChildren();
+      lines.forEach(([icon, text], index) => {
+        const item = document.createElement("li");
+        item.style.animationDelay = 150 + index * 90 + "ms";
+        const iconEl = document.createElement("span");
+        iconEl.textContent = icon;
+        item.append(iconEl, document.createTextNode(text));
+        list.append(item);
+      });
+      document.getElementById("recapDialog").hidden = false;
+      if (week.active && savedMore) setTimeout(showConfetti, 300);
+    }
+    function maybeShowRecap() {
+      const lastMonday = new Date(mondayFor(new Date()));
+      lastMonday.setDate(lastMonday.getDate() - 7);
+      const key = dateKey(lastMonday);
+      if (data.lastSummaryWeek === key) return;
+      data.lastSummaryWeek = key;
+      saveData();
+      if (weekStats(lastMonday).active) setTimeout(showRecap, 1400);
+    }
+    document.getElementById("openRecap").addEventListener("click", showRecap);
+    document.getElementById("closeRecap").addEventListener("click", () => { document.getElementById("recapDialog").hidden = true; });
+    document.getElementById("recapDialog").addEventListener("click", event => {
+      if (event.target.id === "recapDialog") event.currentTarget.hidden = true;
+    });
 
     // Spending by category (expense label), for week / month / all time
     let categoryRange = "month";
@@ -2554,7 +2981,7 @@
 
     // Boxes animate in one by one, and again as you scroll down to them
     function revealBoxes() {
-      let waiting = [...document.querySelectorAll(".topbar, .balance-card, .account-tile, .savings-goal, .section-heading, .entry-form, .dashboard-column > .section > .panel, .insights, .categories, .badge-grid, .total-box, .transfer-summary, .history-tools, .history-list, details.backup, .reset-zone, .app-footer")];
+      let waiting = [...document.querySelectorAll(".topbar, .balance-card, .account-tile, .savings-goal, .section-heading, .entry-form, .dashboard-column > .section > .panel, .insights, .categories, .wishlist, .badge-grid, .total-box, .transfer-summary, .history-tools, .history-list, details.backup, .reset-zone, .app-footer")];
       waiting.forEach(box => box.classList.add("reveal"));
       function show(box, delay) {
         box.style.setProperty("--d", delay + "ms");
@@ -2598,6 +3025,7 @@
       render();
       countUpOnLoad();
       revealBoxes();
+      maybeShowRecap();
     }
 
     // Bridge used by the account (Firebase) code below
