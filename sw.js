@@ -1,5 +1,5 @@
 // Cash Cycle offline support: keeps a copy of the app so it opens without internet.
-const CACHE = "cash-cycle-v1";
+const CACHE = "cash-cycle-v3";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {

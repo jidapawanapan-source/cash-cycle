@@ -600,6 +600,110 @@
       .toast { max-width: none; }
     }
 
+    /* ---------- Accounts: login / sign up ---------- */
+    .auth-screen { position: relative; min-height: calc(100vh - 96px); display: grid; place-items: center; }
+    .auth-shell {
+      display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); width: min(100%, 1040px); min-height: 600px; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 30px; background: var(--surface); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .9);
+      animation: rise .8s var(--ease) both;
+    }
+    .auth-showcase {
+      position: relative; display: flex; flex-direction: column; gap: 22px; overflow: hidden; padding: 44px;
+      background:
+        radial-gradient(420px 300px at 100% 0%, rgba(167, 243, 208, .25), transparent 65%),
+        radial-gradient(380px 320px at 0% 110%, rgba(13, 148, 136, .55), transparent 70%),
+        linear-gradient(150deg, #064e3b, #047857 50%, #0f766e);
+    }
+    .auth-brand { display: flex; align-items: center; gap: 11px; font-size: 17px; font-weight: 800; }
+    .auth-brand .brand-mark { width: 40px; height: 40px; font-size: 19px; border-radius: 13px; }
+    .auth-showcase .brand-mark { color: #064e3b; background: #ecfdf5; box-shadow: none; animation: none; }
+    .showcase-title { margin: 16px 0 0; font-size: clamp(30px, 3.6vw, 42px); font-weight: 800; line-height: 1.1; letter-spacing: -.03em; }
+    .showcase-title span { color: #a7f3d0; }
+    .showcase-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; color: #d1fae5; font-size: 14px; }
+    .showcase-list li { display: flex; align-items: center; gap: 11px; }
+    .showcase-list span { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: rgba(2, 30, 24, .35); }
+    .float-cards { position: relative; flex: 1; min-height: 240px; }
+    .float-card {
+      position: absolute; display: grid; gap: 4px; min-width: 170px; padding: 14px 16px; border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 16px; background: rgba(2, 30, 24, .45); backdrop-filter: blur(10px); box-shadow: 0 20px 40px -20px rgba(0, 0, 0, .6);
+      animation: float-card 6s ease-in-out infinite;
+    }
+    .float-card small { color: #a7f3d0; font-size: 11.5px; font-weight: 600; }
+    .float-card strong { font-size: 20px; font-weight: 800; }
+    .float-card i { display: block; height: 6px; margin-top: 4px; border-radius: 999px; background: linear-gradient(90deg, #6ee7b7 var(--w), rgba(255, 255, 255, .15) var(--w)); }
+    .float-card.one { left: 0; top: 0; }
+    .float-card.two { right: 0; top: 46px; animation-delay: -2s; }
+    .float-card.three { left: 16%; top: 138px; animation-delay: -4s; }
+    @keyframes float-card { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    .auth-card { display: flex; flex-direction: column; justify-content: center; gap: 18px; padding: 44px; }
+    .auth-card > .auth-brand { display: none; }
+    .auth-panel { display: grid; gap: 16px; animation: rise .5s var(--ease) both; }
+    .auth-panel h2 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+    .auth-sub { margin: -10px 0 0; color: var(--muted); font-size: 14px; }
+    .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+    .auth-tabs .tab { min-height: 38px; font-size: 13.5px; }
+    .auth-form { display: grid; gap: 13px; }
+    .password-wrap { position: relative; }
+    .password-wrap .text-input { padding-right: 46px; }
+    .password-wrap .icon-button { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); }
+    .password-wrap .icon-button:hover { transform: translateY(-50%) scale(1.08); }
+    .strength { display: grid; gap: 5px; margin-top: -4px; }
+    .strength-bar { height: 5px; overflow: hidden; border-radius: 999px; background: var(--surface-3); }
+    .strength-bar span { display: block; width: 0; height: 100%; border-radius: inherit; transition: width .3s var(--ease), background .3s ease; }
+    .strength small { color: var(--muted); font-size: 11.5px; }
+    .link-button { justify-self: end; padding: 0; border: 0; color: var(--green); background: none; font-size: 12.5px; font-weight: 650; }
+    .link-button:hover { text-decoration: underline; }
+    .auth-note { margin: 0; padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); background: var(--surface-2); font-size: 12px; line-height: 1.5; }
+    .auth-submit { min-height: 48px; font-size: 15px; }
+    .auth-divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; }
+    .auth-divider::before, .auth-divider::after { flex: 1; height: 1px; content: ""; background: var(--line); }
+    .google-button { min-height: 46px; color: var(--ink); background: var(--surface-2); }
+    .google-button:hover { background: var(--surface-3); }
+    .auth-loading { display: grid; justify-items: center; gap: 14px; padding: 40px 0; color: var(--muted); text-align: center; }
+    .spinner { width: 34px; height: 34px; border: 3px solid var(--surface-3); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .modal { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(3, 6, 12, .7); backdrop-filter: blur(6px); animation: fade-in .2s ease both; }
+    .modal-card { display: grid; gap: 12px; width: min(100%, 420px); padding: 28px; border: 1px solid var(--line-strong); border-radius: 22px; background: var(--surface); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .9); text-align: center; animation: pop-in .3s var(--ease) both; }
+    .modal-card p { margin: 0; color: var(--ink-2); font-size: 14px; }
+    .modal-card h2 { justify-content: center; font-size: 20px; }
+    .modal-card .dialog-actions { justify-content: center; margin-top: 8px; }
+    .modal-icon { font-size: 36px; }
+    @keyframes fade-in { from { opacity: 0; } }
+
+    .user-menu { position: relative; }
+    .avatar {
+      display: grid; width: 38px; height: 38px; place-items: center; border: 2px solid rgba(52, 211, 153, .4); border-radius: 50%;
+      color: #022c22; background: linear-gradient(140deg, #6ee7b7, #10b981); font-weight: 800; transition: transform .25s var(--ease), box-shadow .25s ease;
+    }
+    .avatar:hover { transform: scale(1.06); box-shadow: 0 0 0 4px rgba(52, 211, 153, .15); }
+    .avatar.small { width: 36px; height: 36px; flex: 0 0 36px; border-width: 0; }
+    .user-pop {
+      position: absolute; z-index: 15; top: calc(100% + 10px); right: 0; display: grid; gap: 12px; width: 260px; padding: 16px;
+      border: 1px solid var(--line-strong); border-radius: 16px; background: rgba(14, 22, 39, .97); backdrop-filter: blur(12px);
+      box-shadow: 0 24px 48px -16px rgba(0, 0, 0, .85); animation: pop-in .2s var(--ease) both;
+    }
+    .user-pop-head { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .user-pop-head div { display: grid; min-width: 0; }
+    .user-pop-head strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-pop-head span { overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .user-pop-note { margin: 0; padding: 9px 11px; border-radius: 10px; color: var(--ink-2); background: var(--surface-2); font-size: 12px; }
+    .user-pop .button { width: 100%; }
+
+    @media (max-width: 860px) {
+      .auth-shell { grid-template-columns: 1fr; min-height: 0; }
+      .auth-showcase { display: none; }
+      .auth-card > .auth-brand { display: flex; justify-content: center; }
+      .auth-card { padding: 32px 24px; }
+    }
+    @media (max-width: 520px) {
+      .auth-screen { min-height: calc(100vh - 56px); place-items: start center; }
+      .auth-shell { border-radius: 22px; }
+      .auth-card { padding: 26px 18px; }
+      .save-pill { display: none; }
+    }
+
     /* ---------- v4 features ---------- */
     .topbar-actions { display: flex; align-items: center; gap: 10px; }
     .button.install { min-height: 34px; padding: 6px 12px; font-size: 12.5px; border-color: rgba(56, 189, 248, .35); color: #bae6fd; background: var(--sky-soft); }
@@ -730,6 +834,78 @@
   </style>
 </head>
 <body>
+  <div class="auth-screen" id="authScreen" hidden>
+    <div class="auth-shell">
+      <section class="auth-showcase" aria-hidden="true">
+        <div class="auth-brand big"><div class="brand-mark">฿</div><strong>Cash Cycle</strong></div>
+        <h1 class="showcase-title">Your money,<br><span>your account.</span></h1>
+        <ul class="showcase-list">
+          <li><span>👤</span>A separate account for everyone on this device</li>
+          <li><span>🎯</span>Goals, tasks and streaks that keep you going</li>
+          <li><span>🔒</span>Password-protected, saved in your browser</li>
+        </ul>
+        <div class="float-cards">
+          <div class="float-card one"><small>All your money</small><strong>฿4,500.00</strong><i style="--w:67%"></i></div>
+          <div class="float-card two"><small>🔥 Task streak</small><strong>7 days</strong></div>
+          <div class="float-card three"><small>🎯 Pokemon cards</small><strong>82%</strong><i style="--w:82%"></i></div>
+        </div>
+      </section>
+
+      <section class="auth-card">
+        <div class="auth-brand"><div class="brand-mark">฿</div><strong>Cash Cycle</strong></div>
+        <div class="auth-loading" id="authLoading">
+          <span class="spinner" aria-hidden="true"></span>
+          <p id="authLoadingText">Loading…</p>
+        </div>
+        <div class="auth-panel" id="authPanel" hidden>
+          <h2 id="authTitle">Welcome back</h2>
+          <p class="auth-sub" id="authSub">Log in to see your money.</p>
+          <div class="tabs auth-tabs" role="group" aria-label="Log in or sign up" id="authTabs">
+            <button class="tab" type="button" data-mode="login" aria-pressed="true">Log in</button>
+            <button class="tab" type="button" data-mode="signup" aria-pressed="false">Sign up</button>
+          </div>
+          <form class="auth-form" id="authForm" novalidate>
+            <label class="entry-field" id="nameField" for="authName" hidden>Your name
+              <input class="text-input" id="authName" type="text" autocomplete="name" maxlength="40" placeholder="What should we call you?">
+            </label>
+            <label class="entry-field" for="authUsername">Username
+              <input class="text-input" id="authUsername" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" placeholder="e.g. jida">
+            </label>
+            <div class="entry-field" id="passwordField">
+              <label for="authPassword">Password</label>
+              <div class="password-wrap">
+                <input class="text-input" id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters">
+                <button class="icon-button" id="togglePassword" type="button" aria-label="Show password" aria-pressed="false">👁</button>
+              </div>
+            </div>
+            <div class="strength" id="strength" hidden>
+              <div class="strength-bar"><span id="strengthFill"></span></div>
+              <small id="strengthText">Password strength</small>
+            </div>
+            <label class="entry-field" id="confirmField" for="authConfirm" hidden>Confirm password
+              <input class="text-input" id="authConfirm" type="password" autocomplete="new-password" placeholder="Type it again">
+            </label>
+            <p class="message" id="authMessage" role="status" aria-live="polite"></p>
+            <button class="button primary auth-submit" id="authSubmit" type="submit">Log in</button>
+          </form>
+          <p class="auth-note">🔒 Accounts are saved in this browser only. Passwords can't be recovered, so keep a backup code from inside the app.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal" id="importDialog" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+      <div class="modal-icon">📦</div>
+      <h2 id="importTitle">Bring your data along?</h2>
+      <p>We found Cash Cycle data saved on this device. Do you want to move it into your new account?</p>
+      <div class="dialog-actions">
+        <button class="button quiet" id="importNo" type="button">Start fresh</button>
+        <button class="button primary" id="importYes" type="button">Use this data</button>
+      </div>
+    </div>
+  </div>
+
   <main class="app">
     <header class="topbar">
       <div class="brand">
@@ -739,6 +915,17 @@
       <div class="topbar-actions">
         <button class="button install" id="installApp" type="button" hidden>⬇ Install app</button>
         <div class="save-pill" id="saveStatus" role="status" aria-live="polite">✓ Saved on this device</div>
+        <div class="user-menu" id="userMenu" hidden>
+          <button class="avatar" id="userButton" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Account menu"><span id="userInitial">?</span></button>
+          <div class="user-pop" id="userPop" hidden>
+            <div class="user-pop-head">
+              <span class="avatar small" aria-hidden="true"><span id="userInitialSmall">?</span></span>
+              <div><strong id="userName"></strong><span id="userEmail"></span></div>
+            </div>
+            <p class="user-pop-note">💾 Saved in this browser. Use Backup &amp; restore to move it to another device.</p>
+            <button class="button quiet danger" id="signOutButton" type="button">Sign out</button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -1073,6 +1260,9 @@
       { id: "presence-office", label: "🏢 Presence at office", reward: 300, tracksHours: false }
     ];
     const STORAGE_KEY = "cash-cycle-data";
+    // Simple accounts stored in this browser (each account has its own saved data)
+    const AUTH_ENABLED = true;
+    let cacheKey = STORAGE_KEY;
     function emptyData() {
       return { accounts: { savings: 0, spending: 0 }, goals: [], taskMenu: DEFAULT_TASKS.map(task => ({ ...task })), history: [], tasks: [], notes: [], transfers: [], achievements: [] };
     }
@@ -1164,13 +1354,18 @@
 
     function saveData() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        saveStatus.textContent = "✓ Saved on this device";
-        saveStatus.classList.remove("error");
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        if (!AUTH_ENABLED) {
+          saveStatus.textContent = "✓ Saved on this device";
+          saveStatus.classList.remove("error");
+        }
       } catch {
-        saveStatus.textContent = "Not saved";
-        saveStatus.classList.add("error");
+        if (!AUTH_ENABLED) {
+          saveStatus.textContent = "Not saved";
+          saveStatus.classList.add("error");
+        }
       }
+      if (typeof window.cloudSave === "function") window.cloudSave(data);
     }
 
     let introFrame = 0;
@@ -2269,13 +2464,15 @@
       if (choice.outcome === "accepted") toast("Cash Cycle installed", "good", "📱");
     });
 
-    // Greeting with today's date
-    (() => {
+    // Greeting with today's date (and your first name when signed in)
+    function setGreeting(name = "") {
       const now = new Date();
       const hour = now.getHours();
       const hello = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-      document.getElementById("greeting").textContent = hello + " · " + now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
-    })();
+      const first = name.trim().split(/\s+/)[0];
+      document.getElementById("greeting").textContent = hello + (first ? ", " + first : "") + " · " + now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+    }
+    setGreeting();
 
     // Cursor spotlight on cards
     document.querySelectorAll(".account-tile, .savings-goal, .panel, .total-box").forEach(card => card.classList.add("spot"));
@@ -2302,8 +2499,6 @@
       ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
     });
 
-    render();
-    if (removedAccountsSetHistory) saveData();
 
     // Count money up from ฿0 when the page opens
     function countUpOnLoad() {
@@ -2345,7 +2540,6 @@
       }
       introFrame = setTimeout(() => tick(performance.now()), 16);
     }
-    countUpOnLoad();
 
     // Boxes animate in one by one, and again as you scroll down to them
     function revealBoxes() {
@@ -2383,7 +2577,273 @@
       window.addEventListener("resize", onScroll);
       check();
     }
-    revealBoxes();
+
+    // ---------- Starting the app (with or without accounts) ----------
+    const appRoot = document.querySelector(".app");
+    const authScreen = document.getElementById("authScreen");
+    function startApp() {
+      authScreen.hidden = true;
+      appRoot.hidden = false;
+      render();
+      countUpOnLoad();
+      revealBoxes();
+    }
+
+    // Bridge used by the account (Firebase) code below
+    window.CashCycle = {
+      authEnabled: AUTH_ENABLED,
+      empty: emptyData,
+      parse(json) {
+        try {
+          const value = JSON.parse(json);
+          return value && typeof value === "object" ? normalizeData(value) : emptyData();
+        } catch {
+          return emptyData();
+        }
+      },
+      readCache(uid) {
+        try {
+          const value = JSON.parse(localStorage.getItem(STORAGE_KEY + ":" + uid) || "null");
+          return value && typeof value === "object" ? normalizeData(value) : null;
+        } catch {
+          return null;
+        }
+      },
+      localData() {
+        const local = loadData();
+        const hasSomething = local.history.length || local.accounts.savings || local.accounts.spending || local.goals.length;
+        return hasSomething ? local : null;
+      },
+      current: () => data,
+      showLoading(text) {
+        appRoot.hidden = true;
+        authScreen.hidden = false;
+        document.getElementById("authLoadingText").textContent = text;
+        document.getElementById("authLoading").hidden = false;
+        document.getElementById("authPanel").hidden = true;
+      },
+      showAuth() {
+        appRoot.hidden = true;
+        authScreen.hidden = false;
+        document.getElementById("authLoading").hidden = true;
+        document.getElementById("authPanel").hidden = false;
+      },
+      askImport() {
+        const dialog = document.getElementById("importDialog");
+        dialog.hidden = false;
+        return new Promise(resolve => {
+          const finish = answer => {
+            dialog.hidden = true;
+            resolve(answer);
+          };
+          document.getElementById("importYes").onclick = () => finish(true);
+          document.getElementById("importNo").onclick = () => finish(false);
+        });
+      },
+      startWith(accountData, user, displayName) {
+        data = accountData;
+        cacheKey = STORAGE_KEY + ":" + user.uid;
+        try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch {}
+        const name = displayName || user.displayName || (user.email || "").split("@")[0];
+        const initial = (name || "?").trim().charAt(0).toUpperCase() || "?";
+        document.getElementById("userInitial").textContent = initial;
+        document.getElementById("userInitialSmall").textContent = initial;
+        document.getElementById("userName").textContent = name;
+        document.getElementById("userEmail").textContent = user.email || "";
+        document.getElementById("userMenu").hidden = false;
+        setGreeting(name);
+        startApp();
+      },
+      replace(accountData) {
+        data = accountData;
+        try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch {}
+        render();
+      },
+      signedOut() {
+        window.cloudSave = null;
+        data = emptyData();
+        cacheKey = STORAGE_KEY;
+        document.getElementById("userMenu").hidden = true;
+        document.getElementById("userPop").hidden = true;
+        setGreeting();
+        window.CashCycle.showAuth();
+      }
+    };
+
+    // Account menu (avatar button)
+    const userButton = document.getElementById("userButton");
+    const userPop = document.getElementById("userPop");
+    userButton.addEventListener("click", event => {
+      event.stopPropagation();
+      userPop.hidden = !userPop.hidden;
+      userButton.setAttribute("aria-expanded", String(!userPop.hidden));
+    });
+    document.addEventListener("click", event => {
+      if (!userPop.hidden && !event.target.closest("#userMenu")) {
+        userPop.hidden = true;
+        userButton.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    if (AUTH_ENABLED) {
+      window.CashCycle.showLoading("Loading…");
+    } else {
+      if (removedAccountsSetHistory) saveData();
+      startApp();
+    }
   </script>
+
+  <!-- Simple accounts saved in this browser -->
+  <script>
+    (() => {
+      const CC = window.CashCycle;
+      const USERS_KEY = "cash-cycle-users";
+      const SESSION_KEY = "cash-cycle-session";
+      const $ = id => document.getElementById(id);
+
+      const readUsers = () => {
+        try {
+          const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+          return Array.isArray(users) ? users : [];
+        } catch {
+          return [];
+        }
+      };
+      const writeUsers = users => localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      const toHex = buffer => [...new Uint8Array(buffer)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+      const fromHex = hex => Uint8Array.from(hex.match(/../g), pair => parseInt(pair, 16));
+
+      // Passwords are never stored: only a salted PBKDF2 hash
+      async function hashPassword(password, saltHex) {
+        const salt = saltHex ? fromHex(saltHex) : crypto.getRandomValues(new Uint8Array(16));
+        const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+        const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" }, key, 256);
+        return { salt: toHex(salt), hash: toHex(bits) };
+      }
+
+      async function enter(user, isNew) {
+        localStorage.setItem(SESSION_KEY, user.id);
+        let accountData = CC.readCache(user.id);
+        if (!accountData) {
+          const local = isNew ? CC.localData() : null;
+          if (local && await CC.askImport()) {
+            accountData = local;
+            try { localStorage.removeItem("cash-cycle-data"); } catch {}
+          } else {
+            accountData = CC.empty();
+          }
+        }
+        CC.startWith(accountData, { uid: user.id, email: "@" + user.username, displayName: user.name }, user.name);
+        $("saveStatus").textContent = "✓ Saved";
+        $("saveStatus").classList.remove("error");
+        if (isNew) toast("Welcome to Cash Cycle, " + user.name.split(" ")[0] + "!", "good", "👋");
+      }
+
+      // ----- Form -----
+      let mode = "login";
+      const form = $("authForm");
+      const message = $("authMessage");
+      const submit = $("authSubmit");
+      const showError = text => { message.textContent = text; message.classList.add("error"); };
+
+      function setMode(next) {
+        mode = next;
+        const signup = mode === "signup";
+        $("authTitle").textContent = signup ? "Create your account" : "Welcome back";
+        $("authSub").textContent = signup ? "Start tracking your money in seconds." : "Log in to see your money.";
+        $("nameField").hidden = !signup;
+        $("confirmField").hidden = !signup;
+        $("strength").hidden = !signup;
+        $("authPassword").autocomplete = signup ? "new-password" : "current-password";
+        submit.textContent = signup ? "Create account" : "Log in";
+        document.querySelectorAll("#authTabs .tab").forEach(tab => tab.setAttribute("aria-pressed", String(tab.dataset.mode === mode)));
+        message.textContent = "";
+        message.classList.remove("error");
+      }
+      document.querySelectorAll("#authTabs .tab").forEach(tab => tab.addEventListener("click", () => setMode(tab.dataset.mode)));
+
+      $("togglePassword").addEventListener("click", event => {
+        const show = $("authPassword").type === "password";
+        $("authPassword").type = show ? "text" : "password";
+        $("authConfirm").type = show ? "text" : "password";
+        event.currentTarget.setAttribute("aria-pressed", String(show));
+        event.currentTarget.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        event.currentTarget.textContent = show ? "🙈" : "👁";
+      });
+      $("authPassword").addEventListener("input", () => {
+        const value = $("authPassword").value;
+        let score = 0;
+        if (value.length >= 6) score++;
+        if (value.length >= 10) score++;
+        if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+        if (/\d/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        const levels = [["Too short", "#fb7185"], ["Weak", "#fb7185"], ["Okay", "#fbbf24"], ["Good", "#a3e635"], ["Strong", "#34d399"], ["Very strong", "#34d399"]];
+        const [label, color] = levels[value.length < 6 ? 0 : score];
+        $("strengthFill").style.width = (value ? Math.max(score, 1) / 5 * 100 : 0) + "%";
+        $("strengthFill").style.background = color;
+        $("strengthText").textContent = value ? label : "Password strength";
+      });
+
+      form.addEventListener("submit", async event => {
+        event.preventDefault();
+        const username = $("authUsername").value.trim().toLowerCase();
+        const password = $("authPassword").value;
+        const users = readUsers();
+        if (!username) return showError("Enter your username.");
+        if (mode === "signup") {
+          const name = $("authName").value.trim();
+          if (!name) return showError("Enter your name.");
+          if (!/^[a-z0-9._-]{3,20}$/.test(username)) return showError("Username: 3–20 letters, numbers, dots, dashes or underscores.");
+          if (users.some(user => user.username === username)) return showError("That username is taken on this device. Try another or log in.");
+          if (password.length < 6) return showError("Use at least 6 characters for your password.");
+          if (password !== $("authConfirm").value) return showError("The two passwords don't match.");
+        } else if (!password) {
+          return showError("Enter your password.");
+        }
+        submit.disabled = true;
+        const label = submit.textContent;
+        submit.textContent = "Please wait…";
+        try {
+          if (mode === "signup") {
+            const { salt, hash } = await hashPassword(password);
+            const user = { id: crypto.randomUUID(), name: $("authName").value.trim(), username, salt, hash, createdAt: new Date().toISOString() };
+            writeUsers([...users, user]);
+            form.reset();
+            await enter(user, true);
+          } else {
+            const user = users.find(entry => entry.username === username);
+            const check = user ? await hashPassword(password, user.salt) : null;
+            if (!user || check.hash !== user.hash) return showError("Wrong username or password.");
+            form.reset();
+            await enter(user, false);
+          }
+        } catch {
+          showError("Something went wrong. Please try again.");
+        } finally {
+          submit.disabled = false;
+          submit.textContent = label;
+        }
+      });
+
+      $("signOutButton").addEventListener("click", () => {
+        localStorage.removeItem(SESSION_KEY);
+        CC.signedOut();
+        setMode("login");
+        toast("Signed out", "info", "👋");
+      });
+
+      // ----- Start: stay signed in if you were before -----
+      const sessionId = localStorage.getItem(SESSION_KEY);
+      const sessionUser = readUsers().find(user => user.id === sessionId);
+      if (sessionUser) {
+        enter(sessionUser, false);
+      } else {
+        setMode(readUsers().length ? "login" : "signup");
+        CC.showAuth();
+      }
+    })();
+  </script>
+
 </body>
 </html>
