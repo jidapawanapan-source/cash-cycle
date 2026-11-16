@@ -1,6 +1,6 @@
 // Cash Cycle offline support: keeps a copy of the app so it opens without internet.
-const CACHE = "cash-cycle-v3";
-const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
+const CACHE = "cash-cycle-v4";
+const FILES = ["./", "./index.html", "./firebase-config.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
@@ -20,7 +20,7 @@ self.addEventListener("fetch", event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        if (response.ok && (event.request.url.startsWith(self.location.origin) || event.request.url.includes("fonts.g"))) {
+        if (response.ok && (event.request.url.startsWith(self.location.origin) || event.request.url.includes("fonts.g") || event.request.url.includes("gstatic.com/firebasejs"))) {
           const copy = response.clone();
           caches.open(CACHE).then(cache => cache.put(event.request, copy));
         }

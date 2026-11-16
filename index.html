@@ -885,10 +885,17 @@
             <label class="entry-field" id="confirmField" for="authConfirm" hidden>Confirm password
               <input class="text-input" id="authConfirm" type="password" autocomplete="new-password" placeholder="Type it again">
             </label>
+            <button class="link-button" id="forgotLink" type="button" hidden>Forgot password?</button>
             <p class="message" id="authMessage" role="status" aria-live="polite"></p>
             <button class="button primary auth-submit" id="authSubmit" type="submit">Log in</button>
           </form>
-          <p class="auth-note">🔒 Accounts are saved in this browser only. Passwords can't be recovered, so keep a backup code from inside the app.</p>
+          <div class="auth-divider" id="authDivider" hidden><span>or</span></div>
+          <button class="button google-button" id="googleButton" type="button" hidden>
+            <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+            Continue with Google
+          </button>
+          <button class="link-button back-link" id="backToLogin" type="button" hidden>← Back to log in</button>
+          <p class="auth-note" id="authNote">🔒 Accounts are saved in this browser only. Passwords can't be recovered, so keep a backup code from inside the app.</p>
         </div>
       </section>
     </div>
@@ -1253,6 +1260,7 @@
   <div id="confetti" aria-hidden="true"></div>
   <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
+  <script src="firebase-config.js"></script>
   <script>
     const DEFAULT_TASKS = [
       { id: "study-sat", label: "📘 Study SAT", reward: 200, tracksHours: true },
@@ -1262,6 +1270,9 @@
     const STORAGE_KEY = "cash-cycle-data";
     // Simple accounts stored in this browser (each account has its own saved data)
     const AUTH_ENABLED = true;
+    // Online accounts (same login on every device) when Firebase is set up and the site is opened from a web address
+    const CLOUD_ENABLED = Boolean(window.FIREBASE_CONFIG && window.FIREBASE_CONFIG.apiKey
+      && !String(window.FIREBASE_CONFIG.apiKey).startsWith("PASTE")) && location.protocol.startsWith("http");
     let cacheKey = STORAGE_KEY;
     function emptyData() {
       return { accounts: { savings: 0, spending: 0 }, goals: [], taskMenu: DEFAULT_TASKS.map(task => ({ ...task })), history: [], tasks: [], notes: [], transfers: [], achievements: [] };
@@ -2592,6 +2603,7 @@
     // Bridge used by the account (Firebase) code below
     window.CashCycle = {
       authEnabled: AUTH_ENABLED,
+      cloud: CLOUD_ENABLED,
       empty: emptyData,
       parse(json) {
         try {
@@ -2610,9 +2622,12 @@
         }
       },
       localData() {
-        const local = loadData();
-        const hasSomething = local.history.length || local.accounts.savings || local.accounts.spending || local.goals.length;
-        return hasSomething ? local : null;
+        const hasSomething = value => value && (value.history.length || value.accounts.savings || value.accounts.spending || value.goals.length);
+        const legacy = loadData();
+        if (hasSomething(legacy)) return legacy;
+        // Data from the simple on-device account used last in this browser
+        const lastLocal = window.CashCycle.readCache(localStorage.getItem("cash-cycle-session") || "");
+        return hasSomething(lastLocal) ? lastLocal : null;
       },
       current: () => data,
       showLoading(text) {
@@ -2697,6 +2712,7 @@
   <script>
     (() => {
       const CC = window.CashCycle;
+      if (CC.cloud) return; // online accounts take over (see below)
       const USERS_KEY = "cash-cycle-users";
       const SESSION_KEY = "cash-cycle-session";
       const $ = id => document.getElementById(id);
@@ -2843,6 +2859,239 @@
         CC.showAuth();
       }
     })();
+  </script>
+
+  <!-- Online accounts: same login on every device (Firebase). Runs only when firebase-config.js is filled in. -->
+  <script type="module">
+    const CC = window.CashCycle;
+    if (CC && CC.cloud) {
+      const $ = id => document.getElementById(id);
+      const setStatus = (text, error = false) => {
+        $("saveStatus").textContent = text;
+        $("saveStatus").classList.toggle("error", error);
+      };
+
+      // Switch the form and texts to online-account wording
+      const loginField = $("authUsername");
+      loginField.type = "email";
+      loginField.autocomplete = "email";
+      loginField.maxLength = 120;
+      loginField.placeholder = "you@example.com";
+      loginField.closest("label").firstChild.textContent = "Email";
+      $("authNote").textContent = "☁️ Your account works on all your devices. Log in with the same email anywhere and your money syncs.";
+      document.querySelector(".showcase-title").innerHTML = "Your money,<br><span>on every device.</span>";
+      document.querySelector(".showcase-list li:first-child").lastChild.textContent = "Same account on your phone and computer";
+      document.querySelector(".user-pop-note").textContent = "☁️ Synced to your account on all your devices.";
+
+      let A, F, auth, db;
+      try {
+        const base = "https://www.gstatic.com/firebasejs/10.12.2/";
+        const [{ initializeApp }, authModule, storeModule] = await Promise.all([
+          import(base + "firebase-app.js"),
+          import(base + "firebase-auth.js"),
+          import(base + "firebase-firestore.js")
+        ]);
+        A = authModule;
+        F = storeModule;
+        const app = initializeApp(window.FIREBASE_CONFIG);
+        auth = A.getAuth(app);
+        db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) });
+      } catch (error) {
+        CC.showLoading("Couldn't connect. Check your internet and refresh the page.");
+        throw error;
+      }
+
+      // ----- Form: log in / sign up / reset password -----
+      let mode = "login";
+      let pendingName = "";
+      const form = $("authForm");
+      const message = $("authMessage");
+      const submit = $("authSubmit");
+      const showError = text => { message.textContent = text; message.classList.add("error"); };
+      const showInfo = text => { message.textContent = text; message.classList.remove("error"); };
+
+      function setMode(next) {
+        mode = next;
+        const signup = mode === "signup";
+        const reset = mode === "reset";
+        $("authTitle").textContent = signup ? "Create your account" : reset ? "Reset your password" : "Welcome back";
+        $("authSub").textContent = signup ? "One account for all your devices." : reset ? "We'll email you a link to choose a new password." : "Log in to see your money.";
+        $("nameField").hidden = !signup;
+        $("confirmField").hidden = !signup;
+        $("strength").hidden = !signup;
+        $("passwordField").hidden = reset;
+        $("forgotLink").hidden = mode !== "login";
+        $("authTabs").hidden = reset;
+        $("authDivider").hidden = reset;
+        $("googleButton").hidden = reset;
+        $("backToLogin").hidden = !reset;
+        $("authPassword").autocomplete = signup ? "new-password" : "current-password";
+        submit.textContent = signup ? "Create account" : reset ? "Send reset link" : "Log in";
+        document.querySelectorAll("#authTabs .tab").forEach(tab => tab.setAttribute("aria-pressed", String(tab.dataset.mode === mode)));
+        message.textContent = "";
+        message.classList.remove("error");
+      }
+      document.querySelectorAll("#authTabs .tab").forEach(tab => tab.addEventListener("click", () => setMode(tab.dataset.mode)));
+      $("forgotLink").addEventListener("click", () => setMode("reset"));
+      $("backToLogin").addEventListener("click", () => setMode("login"));
+      $("togglePassword").addEventListener("click", event => {
+        const show = $("authPassword").type === "password";
+        $("authPassword").type = show ? "text" : "password";
+        $("authConfirm").type = show ? "text" : "password";
+        event.currentTarget.setAttribute("aria-pressed", String(show));
+        event.currentTarget.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        event.currentTarget.textContent = show ? "🙈" : "👁";
+      });
+      $("authPassword").addEventListener("input", () => {
+        const value = $("authPassword").value;
+        let score = 0;
+        if (value.length >= 6) score++;
+        if (value.length >= 10) score++;
+        if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+        if (/\d/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        const levels = [["Too short", "#fb7185"], ["Weak", "#fb7185"], ["Okay", "#fbbf24"], ["Good", "#a3e635"], ["Strong", "#34d399"], ["Very strong", "#34d399"]];
+        const [label, color] = levels[value.length < 6 ? 0 : score];
+        $("strengthFill").style.width = (value ? Math.max(score, 1) / 5 * 100 : 0) + "%";
+        $("strengthFill").style.background = color;
+        $("strengthText").textContent = value ? label : "Password strength";
+      });
+
+      const friendly = code => ({
+        "auth/invalid-email": "That email doesn't look right.",
+        "auth/missing-email": "Enter your email.",
+        "auth/user-not-found": "Wrong email or password.",
+        "auth/wrong-password": "Wrong email or password.",
+        "auth/invalid-credential": "Wrong email or password.",
+        "auth/invalid-login-credentials": "Wrong email or password.",
+        "auth/missing-password": "Enter your password.",
+        "auth/email-already-in-use": "There's already an account with this email. Try logging in.",
+        "auth/weak-password": "Use at least 6 characters for your password.",
+        "auth/too-many-requests": "Too many tries. Wait a minute and try again.",
+        "auth/network-request-failed": "No internet connection. Check it and try again.",
+        "auth/popup-closed-by-user": "Google sign-in was closed before finishing.",
+        "auth/popup-blocked": "Your browser blocked the Google window. Allow pop-ups and try again.",
+        "auth/operation-not-allowed": "This sign-in method isn't turned on in Firebase yet.",
+        "auth/unauthorized-domain": "This website isn't allowed in Firebase yet (add it under Authorized domains)."
+      })[code] || "Something went wrong (" + (code || "unknown") + "). Please try again.";
+
+      form.addEventListener("submit", async event => {
+        event.preventDefault();
+        const email = loginField.value.trim();
+        const password = $("authPassword").value;
+        if (!email) return showError("Enter your email.");
+        if (mode === "signup") {
+          if (!$("authName").value.trim()) return showError("Enter your name.");
+          if (password.length < 6) return showError("Use at least 6 characters for your password.");
+          if (password !== $("authConfirm").value) return showError("The two passwords don't match.");
+        } else if (mode === "login" && !password) {
+          return showError("Enter your password.");
+        }
+        submit.disabled = true;
+        const label = submit.textContent;
+        submit.textContent = "Please wait…";
+        try {
+          if (mode === "login") {
+            await A.signInWithEmailAndPassword(auth, email, password);
+          } else if (mode === "signup") {
+            pendingName = $("authName").value.trim();
+            const result = await A.createUserWithEmailAndPassword(auth, email, password);
+            await A.updateProfile(result.user, { displayName: pendingName });
+          } else {
+            await A.sendPasswordResetEmail(auth, email);
+            showInfo("Check your inbox (and spam folder) for a link to reset your password.");
+          }
+        } catch (error) {
+          showError(friendly(error.code));
+        } finally {
+          submit.disabled = false;
+          submit.textContent = label;
+        }
+      });
+
+      $("googleButton").addEventListener("click", async () => {
+        try {
+          await A.signInWithPopup(auth, new A.GoogleAuthProvider());
+        } catch (error) {
+          showError(friendly(error.code));
+        }
+      });
+
+      $("signOutButton").addEventListener("click", () => {
+        A.signOut(auth);
+        toast("Signed out", "info", "👋");
+      });
+
+      // ----- Data sync -----
+      let unsubscribe = null;
+      let saveTimer = 0;
+
+      A.onAuthStateChanged(auth, async user => {
+        if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+        if (!user) {
+          CC.signedOut();
+          setMode("login");
+          return;
+        }
+        CC.showLoading("Loading your money…");
+        const ref = F.doc(db, "users", user.uid);
+        let accountData = null;
+        let isNew = false;
+        try {
+          const snap = await F.getDoc(ref);
+          if (snap.exists()) {
+            accountData = CC.parse(snap.data().json);
+          } else {
+            isNew = true;
+            const local = CC.localData();
+            const useLocal = local ? await CC.askImport() : false;
+            accountData = useLocal ? local : CC.empty();
+            await F.setDoc(ref, { json: JSON.stringify(accountData), updatedAt: F.serverTimestamp() });
+          }
+        } catch {
+          accountData = CC.readCache(user.uid);
+          if (!accountData) {
+            CC.showLoading("Couldn't load your account. Check your internet, then refresh the page.");
+            return;
+          }
+        }
+
+        let savesInFlight = 0;
+        let lastWritten = "";
+        window.cloudSave = current => {
+          setStatus(navigator.onLine ? "Syncing…" : "Offline · will sync");
+          if (!saveTimer) savesInFlight++;
+          clearTimeout(saveTimer);
+          saveTimer = setTimeout(() => {
+            saveTimer = 0;
+            lastWritten = JSON.stringify(current);
+            F.setDoc(ref, { json: lastWritten, updatedAt: F.serverTimestamp() })
+              .then(() => setStatus("✓ Synced"))
+              .catch(() => setStatus("Not synced", true))
+              .finally(() => { savesInFlight = Math.max(0, savesInFlight - 1); });
+          }, 700);
+        };
+
+        const name = pendingName || user.displayName || "";
+        CC.startWith(accountData, user, name);
+        pendingName = "";
+        setStatus("✓ Synced");
+        if (isNew) toast("Welcome to Cash Cycle" + (name ? ", " + name.split(" ")[0] : "") + "!", "good", "👋");
+
+        // Live updates from your other devices
+        unsubscribe = F.onSnapshot(ref, snap => {
+          if (!snap.exists() || snap.metadata.hasPendingWrites || savesInFlight > 0) return;
+          const json = snap.data().json;
+          if (json && json !== lastWritten && json !== JSON.stringify(CC.current())) {
+            CC.replace(CC.parse(json));
+            setStatus("✓ Synced");
+          }
+        });
+      });
+
+      window.addEventListener("offline", () => setStatus("Offline · will sync"));
+      window.addEventListener("online", () => setStatus("✓ Synced"));
+    }
   </script>
 
 </body>
