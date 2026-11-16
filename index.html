@@ -1,0 +1,2389 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cash Cycle">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>Cash Cycle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b14;
+      --surface: #0e1627;
+      --surface-2: #131d32;
+      --surface-3: #1a2640;
+      --line: rgba(148, 163, 184, .11);
+      --line-strong: rgba(148, 163, 184, .22);
+      --ink: #eef2f8;
+      --ink-2: #c3cddc;
+      --muted: #8191a8;
+      --green: #34d399;
+      --green-strong: #10b981;
+      --green-soft: rgba(52, 211, 153, .12);
+      --sky: #38bdf8;
+      --sky-soft: rgba(56, 189, 248, .12);
+      --rose: #fb7185;
+      --rose-soft: rgba(251, 113, 133, .12);
+      --amber: #fbbf24;
+      --amber-soft: rgba(251, 191, 36, .12);
+      --radius-lg: 26px;
+      --radius: 20px;
+      --radius-sm: 13px;
+      --shadow: inset 0 1px 0 rgba(255, 255, 255, .035), 0 24px 48px -28px rgba(0, 0, 0, .75);
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px 32px 64px;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 520px at 8% -8%, rgba(16, 185, 129, .16), transparent 60%),
+        radial-gradient(800px 480px at 100% 0%, rgba(56, 189, 248, .10), transparent 60%),
+        var(--bg);
+      background-attachment: fixed;
+      font: 15px/1.55 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 3px;
+    }
+    svg { display: block; }
+    .app { width: min(100%, 1180px); margin: 0 auto; }
+
+    /* ---------- Top bar ---------- */
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand-mark {
+      display: grid; width: 46px; height: 46px; place-items: center; border-radius: 15px;
+      color: #022c22; font-size: 22px; font-weight: 800;
+      background: linear-gradient(140deg, #6ee7b7, #10b981 55%, #0d9488);
+      box-shadow: 0 10px 24px -8px rgba(16, 185, 129, .6), inset 0 1px 0 rgba(255, 255, 255, .45);
+    }
+    h1 { margin: 0; font-size: 21px; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+    .subtitle { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .save-pill {
+      display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
+      padding: 7px 13px; border: 1px solid rgba(52, 211, 153, .22); border-radius: 999px;
+      color: #a7f3d0; background: rgba(16, 185, 129, .08); font-size: 12px; font-weight: 600;
+    }
+    .save-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(52, 211, 153, .18); }
+    .save-pill.error { color: #fecdd3; border-color: rgba(251, 113, 133, .3); background: var(--rose-soft); }
+    .save-pill.error::before { background: var(--rose); box-shadow: 0 0 0 4px rgba(251, 113, 133, .2); }
+
+    /* ---------- Buttons ---------- */
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      min-height: 42px; padding: 9px 16px; border: 1px solid var(--line-strong); border-radius: 12px;
+      color: var(--ink); background: var(--surface-3); font-weight: 700; font-size: 14px; white-space: nowrap;
+      transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s var(--ease), color .18s ease;
+    }
+    .button:hover { border-color: rgba(148, 163, 184, .38); background: #22304d; transform: translateY(-1px); }
+    .button:active { transform: translateY(0) scale(.98); }
+    .button:disabled { cursor: not-allowed; opacity: .42; transform: none; box-shadow: none; }
+    .button.primary {
+      border-color: transparent; color: #022c22;
+      background: linear-gradient(180deg, #4ade80, #10b981);
+      box-shadow: 0 10px 22px -10px rgba(16, 185, 129, .75), inset 0 1px 0 rgba(255, 255, 255, .35);
+    }
+    .button.primary:hover { background: linear-gradient(180deg, #6ee7b7, #34d399); box-shadow: 0 14px 26px -10px rgba(16, 185, 129, .85), inset 0 1px 0 rgba(255, 255, 255, .4); }
+    .button.danger {
+      border-color: rgba(251, 113, 133, .35); color: #fff1f2;
+      background: linear-gradient(180deg, #f43f5e, #e11d48);
+      box-shadow: 0 10px 22px -10px rgba(225, 29, 72, .7), inset 0 1px 0 rgba(255, 255, 255, .25);
+    }
+    .button.danger:hover { background: linear-gradient(180deg, #fb7185, #f43f5e); border-color: transparent; }
+    .button.quiet { min-height: 36px; padding: 7px 12px; border-color: transparent; color: var(--ink-2); background: transparent; box-shadow: none; }
+    .button.quiet:hover { border-color: var(--line); background: rgba(148, 163, 184, .08); color: var(--ink); }
+    .button.quiet.danger { color: #fda4af; background: transparent; box-shadow: none; }
+    .button.quiet.danger:hover { background: var(--rose-soft); border-color: rgba(251, 113, 133, .25); }
+
+    /* ---------- Hero ---------- */
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+    .balance-card {
+      position: relative; isolation: isolate; display: flex; flex-direction: column; gap: 4px; overflow: hidden;
+      min-height: 290px; padding: 28px 30px 26px; border: 1px solid rgba(110, 231, 183, .28); border-radius: var(--radius-lg);
+      background:
+        radial-gradient(420px 260px at 100% 0%, rgba(167, 243, 208, .28), transparent 65%),
+        radial-gradient(380px 300px at 0% 120%, rgba(13, 148, 136, .55), transparent 70%),
+        linear-gradient(145deg, #064e3b 0%, #047857 48%, #0f766e 100%);
+      box-shadow: 0 30px 60px -30px rgba(5, 150, 105, .65), inset 0 1px 0 rgba(255, 255, 255, .18);
+    }
+    .balance-card::before {
+      position: absolute; z-index: -1; right: -70px; bottom: -110px; width: 320px; height: 320px; content: "";
+      border: 42px solid rgba(255, 255, 255, .05); border-radius: 50%;
+    }
+    .balance-card::after {
+      position: absolute; top: -50%; left: -45%; width: 34%; height: 200%; content: ""; transform: rotate(24deg);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .09), transparent);
+      animation: shine 9s ease-in-out infinite; pointer-events: none;
+    }
+    .balance-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .balance-label { display: inline-flex; align-items: center; gap: 8px; color: #d1fae5; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .balance-amount {
+      margin: 14px 0 2px; color: #fff; font-size: clamp(40px, 6vw, 60px); font-weight: 800; line-height: 1;
+      font-variant-numeric: tabular-nums; letter-spacing: -.035em; text-shadow: 0 8px 30px rgba(2, 44, 34, .35);
+    }
+    .balance-note { color: #a7f3d0; font-size: 13px; }
+    .balance-card .button.primary {
+      color: #064e3b; background: #ecfdf5;
+      box-shadow: 0 10px 22px -12px rgba(2, 44, 34, .8), inset 0 -1px 0 rgba(6, 78, 59, .15);
+    }
+    .balance-card .button.primary:hover { background: #fff; }
+    .balance-card .button.quiet { color: #d1fae5; }
+    .split { margin-top: auto; padding-top: 22px; }
+    .split-bar { display: flex; height: 10px; overflow: hidden; border-radius: 999px; background: rgba(2, 44, 34, .45); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25); }
+    .split-bar span { height: 100%; transition: width .7s var(--ease); }
+    .split-savings { width: 0; background: linear-gradient(90deg, #7dd3fc, #38bdf8); }
+    .split-spending { width: 0; background: linear-gradient(90deg, #bbf7d0, #6ee7b7); }
+    .split-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; color: #d1fae5; font-size: 12.5px; }
+    .split-legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .split-legend b { color: #fff; font-variant-numeric: tabular-nums; }
+    .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; }
+    .dot.savings { background: #38bdf8; }
+    .dot.spending { background: #6ee7b7; }
+    #setBalanceForm { margin-top: 18px; }
+    .balance-card .inline-dialog { border-color: rgba(255, 255, 255, .14); background: rgba(2, 30, 24, .55); backdrop-filter: blur(8px); }
+    .balance-card .entry-field { color: #d1fae5; }
+    .balance-card .message { color: #a7f3d0; }
+    .balance-card .message.error { color: #fecdd3; }
+
+    .hero-side { display: grid; grid-template-rows: auto 1fr; gap: 20px; min-width: 0; }
+    .account-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .account-tile {
+      position: relative; overflow: hidden; min-width: 0; padding: 18px 18px 17px;
+      border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow);
+    }
+    .account-tile::after { position: absolute; inset: 0 0 auto; height: 2px; content: ""; }
+    .account-tile.savings::after { background: linear-gradient(90deg, var(--sky), transparent); }
+    .account-tile.spending::after { background: linear-gradient(90deg, var(--green), transparent); }
+    .tile-head { display: flex; align-items: center; gap: 10px; }
+    .tile-icon { display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 11px; }
+    .tile-icon svg { width: 18px; height: 18px; }
+    .savings .tile-icon { color: var(--sky); background: var(--sky-soft); }
+    .spending .tile-icon { color: var(--green); background: var(--green-soft); }
+    .account-name { color: var(--ink-2); font-size: 13px; font-weight: 600; }
+    .account-value { display: block; margin-top: 14px; font-size: 25px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .tile-meta { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+
+    .savings-goal { display: flex; flex-direction: column; min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .savings-goal-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+    .goal-title { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .goal-title .tile-icon { color: var(--amber); background: var(--amber-soft); }
+    .savings-goal-heading h2 { font-size: 15px; }
+    .savings-goal-name { margin: 1px 0 0; color: var(--muted); font-size: 12.5px; overflow-wrap: anywhere; }
+    .goal-progress { margin-top: auto; padding-top: 18px; }
+    .goal-track { height: 12px; overflow: hidden; border-radius: 999px; background: var(--surface-3); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .35); }
+    .goal-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #10b981, #a3e635); box-shadow: 0 0 18px rgba(52, 211, 153, .55); transition: width .8s var(--ease); }
+    .goal-progress-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 10px; color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    .goal-progress-meta strong { color: #bbf7d0; font-size: 17px; font-weight: 800; }
+    .goal-status { margin: 4px 0 0; color: var(--ink-2); font-size: 12.5px; }
+
+    /* ---------- Sections ---------- */
+    .section { margin-top: 36px; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 2px 14px; }
+    h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; font-weight: 750; letter-spacing: -.01em; }
+    .h-icon { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--line); border-radius: 10px; color: var(--ink-2); background: var(--surface-2); }
+    .h-icon svg { width: 16px; height: 16px; }
+    .section-hint { color: var(--muted); font-size: 12.5px; }
+    .panel { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    h3 { margin: 0; font-size: 15px; font-weight: 700; }
+
+    /* ---------- Forms ---------- */
+    .transaction-forms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .entry-form { position: relative; display: grid; gap: 14px; overflow: hidden; }
+    .entry-form.income-form { order: -1; }
+    .form-head { display: flex; align-items: center; gap: 11px; }
+    .form-head .tile-icon svg { width: 18px; height: 18px; }
+    .income-form .tile-icon { color: var(--green); background: var(--green-soft); }
+    .expense-form .tile-icon { color: var(--rose); background: var(--rose-soft); }
+    .form-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .entry-form::before { position: absolute; inset: 0 0 auto; height: 2px; content: ""; }
+    .income-form::before { background: linear-gradient(90deg, var(--green), transparent 70%); }
+    .expense-form::before { background: linear-gradient(90deg, var(--rose), transparent 70%); }
+    .entry-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, .6fr); gap: 12px; }
+    .entry-field { display: grid; min-width: 0; gap: 6px; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+    .entry-field input { min-width: 0; }
+    .entry-actions .button { width: 100%; min-height: 46px; }
+    .text-input, textarea {
+      width: 100%; min-width: 0; padding: 11px 13px; border: 1px solid var(--line-strong); border-radius: 12px;
+      color: var(--ink); background: #0a1120; font-weight: 500;
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .text-input:hover, textarea:hover { border-color: rgba(148, 163, 184, .34); }
+    .text-input:focus, textarea:focus { outline: none; border-color: rgba(52, 211, 153, .7); box-shadow: 0 0 0 4px rgba(52, 211, 153, .14); background: #0b1324; }
+    select.text-input {
+      min-height: 46px; appearance: none; padding-right: 38px; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238191a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+    }
+    .text-input::placeholder, textarea::placeholder { color: #5f6f86; }
+    .account-allocation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .income-destination { grid-column: 1 / -1; }
+    .message { min-height: 18px; margin: 0 2px; color: var(--muted); font-size: 12.5px; }
+    .message:empty { min-height: 0; }
+    .message.error { color: #fda4af; }
+    .inline-dialog { display: grid; gap: 12px; margin-top: 14px; padding: 16px; border: 1px solid var(--line-strong); border-radius: 16px; background: var(--surface-2); animation: pop-in .22s var(--ease) both; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* ---------- Dashboard ---------- */
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: start; gap: 24px; margin-top: 36px; }
+    .dashboard-column { display: grid; gap: 36px; min-width: 0; }
+    .dashboard-grid .section { margin-top: 0; }
+
+    .task-menu { display: grid; gap: 10px; }
+    .task-option {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 54px;
+      padding: 8px 8px 8px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2);
+      transition: border-color .18s ease, background .18s ease, transform .18s var(--ease);
+    }
+    .task-option:hover { border-color: rgba(52, 211, 153, .3); background: #15223a; }
+    .task-option-name { font-weight: 650; min-width: 0; overflow-wrap: anywhere; }
+    .task-option .button { min-height: 36px; padding: 6px 12px; border: 1px solid rgba(52, 211, 153, .25); border-radius: 10px; color: #a7f3d0; background: var(--green-soft); font-size: 12.5px; }
+    .task-option .button:hover { color: #022c22; background: var(--green); border-color: transparent; }
+    .subhead { display: flex; align-items: center; gap: 10px; margin: 22px 0 12px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .subhead::after { flex: 1; height: 1px; content: ""; background: var(--line); }
+
+    .history-list, .task-list { display: grid; gap: 8px; }
+    .history-list { max-height: 640px; overflow-y: auto; padding-right: 4px; margin-right: -4px; scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
+    .history-item, .task-item {
+      display: flex; align-items: center; gap: 13px; min-width: 0; padding: 12px 14px;
+      border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+      animation: slide-in .26s var(--ease) backwards; transition: border-color .18s ease, background .18s ease;
+    }
+    .history-item:hover { border-color: var(--line-strong); background: var(--surface-2); }
+    .task-item { background: var(--surface-2); }
+    .item-icon { display: grid; flex: 0 0 38px; width: 38px; height: 38px; place-items: center; border-radius: 12px; color: var(--ink-2); background: var(--surface-3); font-size: 16px; font-weight: 700; }
+    .item-icon.income { color: var(--green); background: var(--green-soft); }
+    .item-icon.expense { color: var(--rose); background: var(--rose-soft); }
+    .item-copy { flex: 1; min-width: 0; }
+    .item-label { overflow-wrap: anywhere; font-weight: 650; }
+    .item-date { color: var(--muted); font-size: 12px; }
+    .item-amount { flex: 0 0 auto; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .item-amount.income { color: #6ee7b7; }
+    .item-amount.expense { color: #fda4af; }
+    .item-amount.set { color: var(--ink-2); }
+    .empty-state { padding: 28px 14px; border: 1px dashed var(--line-strong); border-radius: 14px; color: var(--muted); text-align: center; font-size: 13px; background: rgba(148, 163, 184, .025); }
+    .task-item.removing { animation: slide-out .2s ease forwards; }
+    .task-actions { display: flex; flex: 0 0 auto; gap: 6px; }
+    .task-actions .button { min-height: 36px; padding: 6px 12px; font-size: 12.5px; }
+    .study-hours { display: grid; gap: 5px; max-width: 220px; margin-top: 10px; color: var(--ink-2); font-size: 12px; font-weight: 600; }
+    .study-hours .text-input { padding: 8px 11px; }
+    .study-hours-error { min-height: 16px; color: #fda4af; font-weight: 500; }
+
+    .totals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .total-box { padding: 15px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); }
+    .total-box span { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .total-box span::before { width: 8px; height: 8px; border-radius: 50%; content: ""; background: var(--green); }
+    .total-box.spent span::before { background: var(--rose); }
+    .total-box strong { display: block; margin-top: 4px; color: #6ee7b7; font-size: 21px; font-weight: 800; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+    .total-box.spent strong { color: #fda4af; }
+    .transfer-summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding: 16px 18px;
+      border: 1px solid rgba(56, 189, 248, .2); border-radius: 16px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, .10), rgba(16, 185, 129, .06));
+    }
+    .transfer-summary p { margin: 0; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+    .transfer-summary strong { display: block; margin-top: 2px; color: #bae6fd; font-size: 24px; font-weight: 800; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+    .transfer-controls { display: grid; justify-items: end; gap: 6px; }
+    .transfer-status { max-width: 260px; color: var(--muted); font-size: 11.5px; text-align: right; }
+
+    /* ---------- Task log ---------- */
+    .week-toolbar { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .week-toolbar strong { text-align: center; font-size: 13.5px; font-weight: 700; }
+    .week-nav { width: 40px; min-height: 40px; padding: 4px; border: 1px solid var(--line) !important; font-size: 20px; line-height: 1; }
+    .week-days { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
+    .week-day {
+      min-width: 0; padding: 9px 3px; border: 1px solid var(--line); border-radius: 13px;
+      color: var(--muted); background: var(--surface-2); text-align: center; font-size: 11px; font-weight: 600;
+      transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s var(--ease);
+    }
+    .week-day:hover { border-color: var(--line-strong); color: var(--ink-2); transform: translateY(-1px); }
+    .week-day span, .week-day strong { display: block; }
+    .week-day strong { margin-top: 2px; color: var(--ink); font-size: 16px; font-weight: 800; }
+    .week-day[aria-pressed="true"] { border-color: transparent; color: #064e3b; background: linear-gradient(180deg, #6ee7b7, #34d399); box-shadow: 0 10px 20px -10px rgba(16, 185, 129, .8); }
+    .week-day[aria-pressed="true"] strong { color: #022c22; }
+    .note-pad { margin-top: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-2); }
+    .note-pad h3 { font-size: 14px; }
+    .note-list { display: grid; gap: 7px; margin-top: 11px; }
+    .note-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-left: 3px solid var(--green); border-radius: 11px; background: var(--surface); font-size: 13.5px; }
+    .note-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .note-remove { flex: 0 0 auto; min-height: 26px; padding: 0 7px; border: 0; border-radius: 7px; color: var(--muted); background: transparent; }
+    .note-remove:hover { color: #fda4af; background: var(--rose-soft); }
+    .note-empty { margin: 0; color: var(--muted); font-size: 12.5px; }
+
+    /* ---------- Footer tools ---------- */
+    .footer-tools { display: grid; gap: 14px; margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); }
+    details.backup { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+    details.backup summary { display: flex; align-items: center; gap: 10px; padding: 14px 16px; color: var(--ink-2); cursor: pointer; font-size: 14px; font-weight: 650; list-style: none; }
+    details.backup summary::-webkit-details-marker { display: none; }
+    details.backup summary::after { margin-left: auto; content: "+"; color: var(--muted); font-size: 18px; font-weight: 500; transition: transform .2s ease; }
+    details.backup[open] summary::after { transform: rotate(45deg); }
+    details.backup summary .h-icon { width: 28px; height: 28px; }
+    .backup-content { display: grid; gap: 10px; padding: 0 16px 16px; }
+    .backup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    textarea { min-height: 96px; resize: vertical; font: 12px/1.45 ui-monospace, Consolas, monospace; }
+    .backup-note { margin: 0; color: var(--muted); font-size: 12.5px; }
+    .reset-zone { margin: 0; }
+    .reset-zone .inline-dialog { border-color: rgba(251, 113, 133, .3); background: rgba(251, 113, 133, .06); }
+    .app-footer { margin-top: 26px; color: #4f5d73; text-align: center; font-size: 12px; }
+
+    /* ---------- Effects ---------- */
+    .float-change { position: absolute; z-index: 2; right: 28px; bottom: 70px; padding: 4px 12px; border-radius: 999px; color: #064e3b; background: rgba(236, 253, 245, .92); font-size: 15px; font-weight: 800; pointer-events: none; animation: float-up 1s ease-out forwards; }
+    .balance-card.shake { animation: shake .36s ease; }
+    #confetti { position: fixed; z-index: 5; inset: 0; overflow: hidden; pointer-events: none; }
+    .confetti-piece { position: absolute; top: 40%; width: 8px; height: 12px; border-radius: 2px; animation: confetti-fall 1.3s ease-out forwards; }
+    @keyframes shine { 0%, 62% { left: -55%; } 85%, 100% { left: 130%; } }
+    @keyframes float-up { 0% { opacity: 0; transform: translateY(8px) scale(.9); } 18% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-56px); } }
+    @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+    @keyframes slide-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slide-out { to { opacity: 0; transform: translateX(16px); } }
+    @keyframes pop-in { from { opacity: 0; transform: translateY(-4px) scale(.99); } to { opacity: 1; transform: none; } }
+    @keyframes confetti-fall { to { opacity: 0; transform: translate(var(--drift), 200px) rotate(560deg); } }
+
+    /* ---------- Motion & hover polish ---------- */
+    /* Page entrance: each box rises, grows and un-blurs, one after another (and on scroll) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(34px) scale(.96);
+      filter: blur(8px);
+      transition:
+        opacity .7s ease var(--d, 0ms),
+        transform .95s cubic-bezier(.2, 1.15, .3, 1) var(--d, 0ms),
+        filter .7s ease var(--d, 0ms) !important;
+    }
+    .reveal.in { opacity: 1; transform: none; filter: none; }
+
+    /* Brand */
+    .brand-mark { animation: bob 4s ease-in-out infinite; transition: transform .5s var(--ease); }
+    .brand:hover .brand-mark { animation-play-state: paused; transform: rotate(-12deg) scale(1.08); }
+    .save-pill::before { animation: pulse-dot 2.4s ease-in-out infinite; }
+
+    /* Cursor spotlight on cards */
+    .spot { background-image: radial-gradient(360px circle at var(--mx, 50%) var(--my, -200px), rgba(52, 211, 153, .075), transparent 60%); }
+
+    /* Cards lift on hover */
+    .account-tile, .savings-goal, .total-box, .transfer-summary, .panel {
+      transition: transform .35s var(--ease), border-color .25s ease, box-shadow .35s var(--ease);
+    }
+    .account-tile:hover, .savings-goal:hover, .total-box:hover, .transfer-summary:hover {
+      transform: translateY(-4px);
+      border-color: var(--line-strong);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 30px 50px -26px rgba(0, 0, 0, .9);
+    }
+    .account-tile.savings:hover { border-color: rgba(56, 189, 248, .35); box-shadow: 0 30px 50px -26px rgba(56, 189, 248, .35); }
+    .account-tile.spending:hover { border-color: rgba(52, 211, 153, .35); box-shadow: 0 30px 50px -26px rgba(16, 185, 129, .35); }
+    .panel:hover { border-color: var(--line-strong); }
+    .entry-form:focus-within { border-color: rgba(52, 211, 153, .3); box-shadow: 0 0 0 4px rgba(52, 211, 153, .06), var(--shadow); }
+    .expense-form:focus-within { border-color: rgba(251, 113, 133, .3); box-shadow: 0 0 0 4px rgba(251, 113, 133, .06), var(--shadow); }
+
+    /* Icons react to their card */
+    .tile-icon, .h-icon, .item-icon { transition: transform .4s var(--ease), background .25s ease, color .25s ease; }
+    .account-tile:hover .tile-icon, .savings-goal:hover .tile-icon, .entry-form:hover .tile-icon { transform: rotate(-8deg) scale(1.12); }
+    .section-heading:hover .h-icon { transform: rotate(-10deg) scale(1.1); color: var(--green); }
+    .savings-goal:hover .goal-title .tile-icon svg { animation: spin-slow 1.6s var(--ease); }
+
+    /* Balance card */
+    .balance-card { transition: box-shadow .45s var(--ease), border-color .3s ease; }
+    .balance-card:hover { border-color: rgba(167, 243, 208, .45); box-shadow: 0 40px 80px -30px rgba(5, 150, 105, .85), inset 0 1px 0 rgba(255, 255, 255, .22); }
+    .balance-card::before { transition: transform 1.2s var(--ease); }
+    .balance-card:hover::before { transform: scale(1.15) translate(-16px, -12px); }
+    .balance-amount { transform-origin: left center; }
+    .balance-amount.bump { animation: bump .5s var(--ease); }
+
+    /* Progress bars shimmer */
+    .goal-fill, .split-bar span { position: relative; overflow: hidden; }
+    .goal-fill::after, .split-bar span::after {
+      position: absolute; inset: 0; content: "";
+      background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .45) 50%, transparent 80%);
+      transform: translateX(-100%); animation: shimmer 2.8s ease-in-out infinite;
+    }
+    .split-bar span:nth-child(2)::after { animation-delay: 1.4s; }
+    .split-bar span:hover { filter: brightness(1.15); }
+
+    /* Buttons: shine sweep + click ripple */
+    .button { position: relative; overflow: hidden; isolation: isolate; }
+    .button.primary::before, .button.danger:not(.quiet)::before {
+      position: absolute; z-index: -1; top: 0; left: -80%; width: 50%; height: 100%; content: "";
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+      transform: skewX(-20deg); transition: left .6s var(--ease);
+    }
+    .button.primary:hover::before, .button.danger:not(.quiet):hover::before { left: 130%; }
+    .ripple { position: absolute; z-index: -1; border-radius: 50%; background: currentColor; opacity: .25; transform: scale(0); pointer-events: none; animation: ripple .6s ease-out forwards; }
+
+    /* Lists slide on hover */
+    .task-option:hover { transform: translateX(4px); }
+    .history-item:hover { transform: translateX(4px); }
+    .history-item:hover .item-icon { transform: scale(1.12) rotate(-6deg); }
+    .history-item { transition: transform .3s var(--ease), border-color .18s ease, background .18s ease; }
+    .task-item { transition: transform .3s var(--ease), border-color .18s ease; }
+    .task-item:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+    .note-item { animation: slide-in .3s var(--ease) backwards; transition: transform .3s var(--ease), border-color .2s ease; }
+    .note-item:hover { transform: translateX(4px); border-color: var(--line-strong); border-left-color: var(--green); }
+    .week-day[aria-pressed="true"] { animation: pop .35s var(--ease); }
+    .week-nav { transition: transform .25s var(--ease), background .18s ease; }
+    #previousWeek:hover { transform: translateX(-3px); }
+    #nextWeek:hover { transform: translateX(3px); }
+
+    /* Inputs */
+    .text-input:focus { transform: translateY(-1px); }
+    .text-input { transition: border-color .16s ease, box-shadow .2s ease, background .16s ease, transform .2s var(--ease); }
+
+    /* Backup drawer */
+    details.backup[open] .backup-content { animation: rise .35s var(--ease) both; }
+    details.backup summary:hover { color: var(--ink); }
+    details.backup summary:hover .h-icon { transform: translateY(2px); color: var(--green); }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, .45); } 60% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); } }
+    @keyframes shimmer { 0%, 55% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    @keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.06); } 100% { transform: scale(1); } }
+    @keyframes ripple { to { transform: scale(2.6); opacity: 0; } }
+    @keyframes pop { 0% { transform: scale(.9); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+    /* ---------- Polish pass ---------- */
+    .entry-form { align-content: start; }
+    .hero-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+    .hero-stat {
+      padding: 12px 14px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 14px;
+      background: rgba(2, 30, 24, .32); backdrop-filter: blur(6px);
+      transition: background .25s ease, transform .3s var(--ease);
+    }
+    .hero-stat:hover { background: rgba(2, 30, 24, .48); transform: translateY(-2px); }
+    .hero-stat span { display: block; color: #a7f3d0; font-size: 11.5px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+    .hero-stat strong { display: block; margin-top: 3px; color: #fff; font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .goal-empty {
+      margin: auto 0 0; padding: 14px 16px; border: 1px dashed var(--line-strong); border-radius: 13px;
+      color: var(--muted); font-size: 13px; background: rgba(251, 191, 36, .03);
+    }
+    .goal-empty::before { content: "✨ "; }
+    .savings-goal-heading { margin-bottom: 16px; }
+    .transfer-copy { display: grid; gap: 2px; min-width: 0; }
+    .transfer-status { max-width: none; margin-top: 4px; text-align: left; font-size: 12px; }
+    .transfer-summary .button { flex: 0 0 auto; }
+    .button.primary:disabled {
+      color: var(--muted); background: var(--surface-3); border-color: var(--line);
+      box-shadow: none; opacity: 1;
+    }
+    .button.primary:disabled::before { display: none; }
+    .item-amount { padding: 4px 10px; border-radius: 999px; }
+    .item-amount.income { background: var(--green-soft); }
+    .item-amount.expense { background: var(--rose-soft); }
+    .item-amount.set { background: rgba(148, 163, 184, .08); }
+    .section-heading h2 { font-size: 18px; }
+    ::selection { color: #022c22; background: #6ee7b7; }
+    @media (max-width: 520px) {
+      .hero-stats { gap: 8px; margin-top: 18px; }
+      .hero-stat strong { font-size: 16px; }
+      .balance-top .button { width: 100%; }
+      .transfer-summary .button { width: 100%; }
+    }
+
+    /* ---------- v3 features ---------- */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .hero-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    /* Quick chips */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      min-height: 32px; padding: 5px 12px; border: 1px solid var(--line-strong); border-radius: 999px;
+      color: var(--ink-2); background: var(--surface-2); font-size: 12.5px; font-weight: 600;
+      transition: transform .2s var(--ease), background .18s ease, border-color .18s ease, color .18s ease;
+    }
+    .chip:hover { transform: translateY(-2px); border-color: rgba(148, 163, 184, .4); color: var(--ink); background: var(--surface-3); }
+    .chip:active { transform: scale(.95); }
+    .chip.amount { font-variant-numeric: tabular-nums; }
+    .expense-form .chip[aria-pressed="true"] { color: #fff1f2; border-color: rgba(251, 113, 133, .55); background: var(--rose-soft); }
+    .income-form .chip[aria-pressed="true"] { color: #ecfdf5; border-color: rgba(52, 211, 153, .55); background: var(--green-soft); }
+
+    /* Weekly chart */
+    .insights { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px; align-items: stretch; }
+    .chart-wrap { min-width: 0; }
+    .chart-legend { display: flex; gap: 18px; margin-bottom: 14px; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+    .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .key { width: 10px; height: 10px; border-radius: 3px; }
+    .key.in { background: var(--green); }
+    .key.out { background: var(--rose); }
+    .chart { position: relative; height: 210px; padding-left: 52px; }
+    .chart-grid { position: absolute; inset: 0 0 26px 52px; }
+    .grid-line { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(148, 163, 184, .13); }
+    .grid-line span { position: absolute; right: calc(100% + 10px); top: -8px; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .grid-line.base { border-top: 1px solid rgba(148, 163, 184, .28); }
+    .chart-days { position: absolute; inset: 0 0 0 52px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    .chart-day { position: relative; display: flex; flex-direction: column; align-items: center; border-radius: 10px; cursor: default; transition: background .18s ease; }
+    .chart-day:hover, .chart-day:focus-visible { background: rgba(148, 163, 184, .06); outline: none; }
+    .chart-bars { display: flex; flex: 1; align-items: flex-end; gap: 2px; width: 100%; justify-content: center; padding-bottom: 0; margin-bottom: 26px; }
+    .bar { width: min(14px, 28%); height: 0; min-height: 0; border-radius: 4px 4px 0 0; transition: height .9s var(--ease), filter .18s ease; }
+    .bar.in { background: var(--green); }
+    .bar.out { background: var(--rose); }
+    .bar.has { min-height: 3px; }
+    .chart-day:hover .bar { filter: brightness(1.15); }
+    .chart-label { position: absolute; bottom: 4px; color: var(--muted); font-size: 11.5px; font-weight: 600; }
+    .chart-day.today .chart-label { color: var(--green); }
+    .chart-tip {
+      position: absolute; z-index: 3; bottom: calc(100% - 18px); left: 50%; min-width: 140px; padding: 9px 11px;
+      border: 1px solid var(--line-strong); border-radius: 11px; background: #0a1120; box-shadow: 0 16px 30px -12px rgba(0, 0, 0, .8);
+      color: var(--ink); font-size: 12px; white-space: nowrap; pointer-events: none;
+      opacity: 0; transform: translate(-50%, 6px); transition: opacity .16s ease, transform .2s var(--ease);
+    }
+    .chart-day:hover .chart-tip, .chart-day:focus-visible .chart-tip { opacity: 1; transform: translate(-50%, 0); }
+    .chart-tip b { display: block; margin-bottom: 4px; }
+    .chart-tip div { display: flex; align-items: center; justify-content: space-between; gap: 14px; color: var(--ink-2); }
+    .chart-tip i { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 2px; }
+    .chart-empty { position: absolute; inset: 0 0 26px 52px; display: grid; place-items: center; color: var(--muted); font-size: 13px; pointer-events: none; }
+    .insight-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; }
+    .insight { padding: 13px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); transition: transform .3s var(--ease), border-color .2s ease; }
+    .insight:hover { transform: translateY(-3px); border-color: var(--line-strong); }
+    .insight span { display: block; color: var(--muted); font-size: 11.5px; font-weight: 600; }
+    .insight strong { display: block; margin-top: 3px; font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    #weekIn { color: #6ee7b7; }
+    #weekOut { color: #fda4af; }
+
+    /* History tools */
+    .history-tools { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .tabs { display: flex; flex: 0 0 auto; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+    .tab { min-height: 32px; padding: 4px 11px; border: 0; border-radius: 9px; color: var(--muted); background: transparent; font-size: 12.5px; font-weight: 650; transition: background .18s ease, color .18s ease; }
+    .tab:hover { color: var(--ink); }
+    .tab[aria-pressed="true"] { color: var(--ink); background: var(--surface-3); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05); }
+    .search { flex: 1; min-width: 0; padding: 8px 12px; }
+
+    /* Toasts */
+    .toasts { position: fixed; z-index: 10; right: 20px; bottom: 20px; display: grid; gap: 10px; justify-items: end; pointer-events: none; }
+    .toast {
+      display: flex; align-items: center; gap: 10px; max-width: min(360px, calc(100vw - 40px)); padding: 12px 16px 12px 12px;
+      border: 1px solid var(--line-strong); border-radius: 14px; background: rgba(14, 22, 39, .92); backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px -16px rgba(0, 0, 0, .8); font-size: 13.5px; font-weight: 600;
+      animation: toast-in .45s cubic-bezier(.2, 1.2, .3, 1) both;
+    }
+    .toast.out { animation: toast-out .3s ease forwards; }
+    .toast-icon { display: grid; flex: 0 0 30px; width: 30px; height: 30px; place-items: center; border-radius: 9px; background: var(--green-soft); color: var(--green); }
+    .toast.bad .toast-icon { background: var(--rose-soft); color: var(--rose); }
+    .toast.info .toast-icon { background: var(--sky-soft); color: var(--sky); }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(16px) scale(.95); } to { opacity: 1; transform: none; } }
+    @keyframes toast-out { to { opacity: 0; transform: translateX(30px); } }
+
+    @media (max-width: 960px) {
+      .insights { grid-template-columns: 1fr; }
+      .insight-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .insight-stats { grid-template-columns: 1fr 1fr; }
+      .history-tools { flex-direction: column; align-items: stretch; }
+      .tabs { justify-content: space-between; }
+      .tab { flex: 1; padding-inline: 4px; }
+      .chart { padding-left: 40px; }
+      .chart-grid, .chart-days, .chart-empty { left: 40px; }
+    }
+    @media (max-width: 520px) {
+      .hero-stat { padding: 10px; }
+      .hero-stat span { font-size: 10px; }
+      .hero-stat strong { font-size: 14px; }
+      .toasts { right: 12px; left: 12px; bottom: 12px; justify-items: stretch; }
+      .toast { max-width: none; }
+    }
+
+    /* ---------- v4 features ---------- */
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    .button.install { min-height: 34px; padding: 6px 12px; font-size: 12.5px; border-color: rgba(56, 189, 248, .35); color: #bae6fd; background: var(--sky-soft); }
+    .icon-button {
+      display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid transparent; border-radius: 9px;
+      color: var(--muted); background: transparent; font-size: 13px; transition: background .16s ease, color .16s ease, border-color .16s ease, transform .2s var(--ease);
+    }
+    .icon-button:hover { color: var(--ink); border-color: var(--line); background: rgba(148, 163, 184, .08); transform: scale(1.08); }
+    .icon-button.danger:hover { color: #fda4af; border-color: rgba(251, 113, 133, .25); background: var(--rose-soft); }
+
+    /* Goals list */
+    .goal-list { display: grid; gap: 10px; max-height: 330px; overflow-y: auto; margin-right: -4px; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
+    .goal-item { padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); animation: slide-in .3s var(--ease) backwards; transition: border-color .2s ease; }
+    .goal-item:hover { border-color: var(--line-strong); }
+    .goal-item.reached { border-color: rgba(52, 211, 153, .35); background: linear-gradient(135deg, rgba(16, 185, 129, .1), var(--surface-2)); }
+    .goal-item-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+    .goal-item-name { min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+    .goal-item-actions { display: flex; gap: 2px; opacity: .55; transition: opacity .2s ease; }
+    .goal-item:hover .goal-item-actions, .goal-item:focus-within .goal-item-actions { opacity: 1; }
+    .goal-item .goal-track { height: 9px; }
+    .goal-item .goal-progress-meta { margin-top: 7px; }
+    .goal-item .goal-progress-meta strong { font-size: 14px; }
+    .goal-item .goal-status { margin-top: 2px; font-size: 12px; color: var(--muted); }
+    .goal-item.reached .goal-status { color: #6ee7b7; font-weight: 600; }
+    .goal-empty { margin: 0; }
+
+    /* Task editor */
+    .new-task { width: 100%; margin-top: 10px; border-style: dashed; color: var(--ink-2); background: transparent; }
+    .new-task:hover { color: var(--green); border-color: rgba(52, 211, 153, .45); background: var(--green-soft); }
+    .task-option.managing { border-style: dashed; }
+    .task-option-controls { display: flex; align-items: center; gap: 4px; }
+    .task-option-reward { margin-right: 6px; color: #86efac; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .task-editor-fields { display: grid; grid-template-columns: 70px minmax(0, 1fr) 110px 140px; gap: 10px; }
+    #taskEmoji { text-align: center; font-size: 18px; padding-inline: 6px; }
+    #manageTasks[aria-pressed="true"] { color: var(--green); border-color: rgba(52, 211, 153, .35); background: var(--green-soft); }
+
+    /* Categories */
+    .categories { margin-top: 20px; }
+    .cat-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .cat-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 28px; }
+    .cat-row { display: flex; align-items: center; gap: 12px; min-width: 0; animation: slide-in .35s var(--ease) backwards; }
+    .cat-icon { display: grid; flex: 0 0 36px; width: 36px; height: 36px; place-items: center; border-radius: 11px; background: var(--rose-soft); color: var(--rose); font-size: 16px; transition: transform .3s var(--ease); }
+    .cat-row:hover .cat-icon { transform: scale(1.1) rotate(-6deg); }
+    .cat-body { flex: 1; min-width: 0; }
+    .cat-line { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+    .cat-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+    .cat-value { flex: 0 0 auto; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+    .cat-track { height: 8px; overflow: hidden; border-radius: 999px; background: var(--surface-3); }
+    .cat-bar { width: 0; height: 100%; border-radius: inherit; background: var(--rose); transition: width .9s var(--ease); }
+    .cat-row:hover .cat-bar { filter: brightness(1.15); }
+    .cat-list .empty-state { grid-column: 1 / -1; }
+
+    /* Achievements */
+    .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+    .badge {
+      position: relative; display: grid; justify-items: start; gap: 3px; padding: 16px; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 16px; background: var(--surface);
+      transition: transform .35s var(--ease), border-color .25s ease, box-shadow .35s var(--ease);
+    }
+    .badge:hover { transform: translateY(-4px); border-color: var(--line-strong); }
+    .badge-icon { display: grid; width: 44px; height: 44px; margin-bottom: 8px; place-items: center; border-radius: 14px; background: var(--surface-3); font-size: 22px; filter: grayscale(1); opacity: .55; transition: transform .4s var(--ease); }
+    .badge:hover .badge-icon { transform: rotate(-10deg) scale(1.1); }
+    .badge strong { font-size: 14px; }
+    .badge-desc { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .badge-track { width: 100%; height: 6px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: var(--surface-3); }
+    .badge-track div { height: 100%; border-radius: inherit; background: var(--muted); }
+    .badge-count { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .badge-done { margin-top: 6px; padding: 2px 9px; border-radius: 999px; color: #022c22; background: var(--green); font-size: 11px; font-weight: 700; }
+    .badge.unlocked { border-color: rgba(251, 191, 36, .3); background: linear-gradient(160deg, rgba(251, 191, 36, .1), var(--surface) 60%); }
+    .badge.unlocked:hover { box-shadow: 0 24px 40px -24px rgba(251, 191, 36, .45); }
+    .badge.unlocked .badge-icon { filter: none; opacity: 1; background: var(--amber-soft); box-shadow: 0 0 0 1px rgba(251, 191, 36, .25); }
+    .badge.unlocked::after {
+      position: absolute; inset: 0; content: ""; pointer-events: none;
+      background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .07) 50%, transparent 70%);
+      transform: translateX(-100%); animation: shimmer 5s ease-in-out infinite;
+    }
+
+    @media (max-width: 720px) {
+      .task-editor-fields { grid-template-columns: 70px minmax(0, 1fr); }
+      .cat-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .badge-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .badge { padding: 12px; }
+      .topbar-actions .button.install { padding: 6px 9px; }
+    }
+
+    @media (hover: none) {
+      .goal-item-actions { opacity: 1; }
+    }
+    @media (hover: none) {
+      .account-tile:hover, .savings-goal:hover, .total-box:hover, .transfer-summary:hover,
+      .task-option:hover, .history-item:hover, .task-item:hover, .note-item:hover { transform: none; }
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .balance-card { min-height: 250px; }
+      .dashboard-grid { grid-template-columns: 1fr; gap: 36px; }
+    }
+    @media (max-width: 720px) {
+      body { padding: 22px 20px 48px; }
+      .transaction-forms { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      body { padding: 16px 16px 40px; }
+      .topbar { margin-bottom: 20px; }
+      .subtitle { display: none; }
+      .save-pill { padding: 6px 10px; font-size: 11px; }
+      .balance-card { padding: 22px 20px 20px; min-height: 0; }
+      .balance-top { flex-direction: column; gap: 10px; }
+      .account-overview { gap: 10px; }
+      .account-tile { padding: 14px; }
+      .account-value { font-size: 20px; }
+      .tile-meta { display: none; }
+      .account-allocation, .entry-fields { grid-template-columns: 1fr; }
+      .task-item { align-items: flex-start; }
+      .task-option { flex-wrap: wrap; padding: 12px; }
+      .week-days { gap: 4px; }
+      .week-day { padding-inline: 1px; font-size: 10px; border-radius: 10px; }
+      .week-day strong { font-size: 14px; }
+      .transfer-summary { flex-direction: column; align-items: flex-start; }
+      .transfer-controls { justify-items: start; }
+      .transfer-status { text-align: left; }
+      .totals { gap: 8px; }
+      .total-box strong { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">฿</div>
+        <div><h1>Cash Cycle</h1><p class="subtitle" id="greeting">A little more clarity, every day.</p></div>
+      </div>
+      <div class="topbar-actions">
+        <button class="button install" id="installApp" type="button" hidden>⬇ Install app</button>
+        <div class="save-pill" id="saveStatus" role="status" aria-live="polite">✓ Saved on this device</div>
+      </div>
+    </header>
+
+    <div class="hero-grid">
+      <section class="balance-card" id="balanceCard" aria-labelledby="balanceTitle">
+        <div class="balance-top">
+          <div>
+            <div class="balance-label" id="balanceTitle">All your money</div>
+            <div class="balance-amount" id="balanceAmount" aria-live="polite">฿0.00</div>
+            <span class="balance-note">Savings + Spending</span>
+          </div>
+          <button class="button primary" id="openSetBalance" type="button">Set up accounts</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><span>Waiting to transfer</span><strong id="pendingAll">฿0.00</strong></div>
+          <div class="hero-stat"><span>Tasks this week</span><strong id="tasksThisWeek">0</strong></div>
+          <div class="hero-stat"><span>Task streak</span><strong id="taskStreak">0 days</strong></div>
+        </div>
+        <div class="split" aria-hidden="true">
+          <div class="split-bar"><span class="split-savings" id="splitSavings"></span><span class="split-spending" id="splitSpending"></span></div>
+          <div class="split-legend">
+            <span><i class="dot savings"></i>Savings <b id="savingsShare">0%</b></span>
+            <span><i class="dot spending"></i>Spending <b id="spendingShare">0%</b></span>
+          </div>
+        </div>
+        <form class="inline-dialog" id="setBalanceForm" hidden>
+          <label class="entry-field" for="totalMoneyInput">How much money do you have in total? (฿)
+            <input class="text-input" id="totalMoneyInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
+          </label>
+          <div class="account-allocation">
+            <label class="entry-field" for="savingsInput">How much do you want to save? (฿)
+              <input class="text-input" id="savingsInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
+            </label>
+            <label class="entry-field" for="spendingInput">How much do you want for spending? (฿)
+              <input class="text-input" id="spendingInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
+            </label>
+          </div>
+          <p class="message" id="accountSetupMessage" role="status" aria-live="polite">Savings and Spending must add up to your total money.</p>
+          <div class="dialog-actions">
+            <button class="button quiet" id="cancelSetBalance" type="button">Cancel</button>
+            <button class="button primary" type="submit">Save accounts</button>
+          </div>
+        </form>
+      </section>
+
+      <div class="hero-side">
+        <div class="account-overview" aria-label="Account balances">
+          <section class="account-tile savings" aria-labelledby="savingsTitle">
+            <div class="tile-head">
+              <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="15" rx="3"/><circle cx="12" cy="11.5" r="3.2"/><path d="M12 8.3V7M7 19v2M17 19v2"/></svg></span>
+              <span class="account-name" id="savingsTitle">Savings</span>
+            </div>
+            <strong class="account-value" id="savingsBalance">฿0.00</strong>
+            <span class="tile-meta">Put aside for later</span>
+          </section>
+          <section class="account-tile spending" aria-labelledby="spendingTitle">
+            <div class="tile-head">
+              <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/><path d="M21 9h-4.5a3 3 0 0 0 0 6H21V9z"/><path d="M16.5 12h.01"/></svg></span>
+              <span class="account-name" id="spendingTitle">Spending</span>
+            </div>
+            <strong class="account-value" id="spendingBalance">฿0.00</strong>
+            <span class="tile-meta">Ready to use</span>
+          </section>
+        </div>
+
+        <section class="savings-goal" aria-labelledby="goalsTitle">
+          <div class="savings-goal-heading">
+            <div class="goal-title">
+              <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>
+              <div>
+                <h2 id="goalsTitle">Goals</h2>
+                <p class="savings-goal-name">Measured against your Spending</p>
+              </div>
+            </div>
+            <button class="button" id="addGoal" type="button">+ Add goal</button>
+          </div>
+          <p class="goal-empty" id="goalEmpty">Pick something you want and watch your Spending grow toward it.</p>
+          <div class="goal-list" id="goalList"></div>
+          <form class="inline-dialog goal-form" id="goalForm" hidden novalidate>
+            <strong id="goalFormTitle">New goal</strong>
+            <label class="entry-field" for="goalNameInput">What are you saving for?
+              <input class="text-input" id="goalNameInput" type="text" maxlength="40" placeholder="Pokemon cards, new shoes…">
+            </label>
+            <label class="entry-field" for="goalAmountInput">Goal amount (฿)
+              <input class="text-input" id="goalAmountInput" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required>
+            </label>
+            <p class="message" id="goalMessage" role="status" aria-live="polite"></p>
+            <div class="dialog-actions">
+              <button class="button quiet" id="cancelGoal" type="button">Cancel</button>
+              <button class="button primary" type="submit">Save goal</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="quickTitle">
+      <div class="section-heading">
+        <h2 id="quickTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>Add money</h2>
+        <span class="section-hint">Expenses and income are separate</span>
+      </div>
+      <div class="transaction-forms">
+        <form class="panel entry-form expense-form" id="expenseForm" novalidate>
+          <div class="form-head">
+            <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></span>
+            <div><h3>Expense</h3><p>Taken from Spending</p></div>
+          </div>
+          <div class="entry-fields">
+            <label class="entry-field" for="expenseLabel">What did you spend on?
+              <input class="text-input" id="expenseLabel" name="label" type="text" autocomplete="off" placeholder="Lunch, bus fare…" required>
+            </label>
+            <label class="entry-field" for="expenseAmount">Amount (฿)
+              <input class="text-input" id="expenseAmount" name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required>
+            </label>
+          </div>
+          <div class="chip-row" role="group" aria-label="Quick categories">
+            <button class="chip" type="button" data-label="Food" data-icon="🍜">🍜 Food</button>
+            <button class="chip" type="button" data-label="Transport" data-icon="🚌">🚌 Transport</button>
+            <button class="chip" type="button" data-label="Snacks" data-icon="🧋">🧋 Snacks</button>
+            <button class="chip" type="button" data-label="Shopping" data-icon="🛍️">🛍️ Shopping</button>
+            <button class="chip" type="button" data-label="Fun" data-icon="🎮">🎮 Fun</button>
+          </div>
+          <div class="chip-row" role="group" aria-label="Quick amounts">
+            <button class="chip amount" type="button" data-amount="20">฿20</button>
+            <button class="chip amount" type="button" data-amount="50">฿50</button>
+            <button class="chip amount" type="button" data-amount="100">฿100</button>
+            <button class="chip amount" type="button" data-amount="200">฿200</button>
+            <button class="chip amount" type="button" data-amount="500">฿500</button>
+          </div>
+          <div class="entry-actions"><button class="button danger" type="submit">Add expense</button></div>
+          <p class="message" data-role="message" role="status" aria-live="polite"></p>
+        </form>
+        <form class="panel entry-form income-form" id="incomeForm" novalidate>
+          <div class="form-head">
+            <span class="tile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+            <div><h3>Income</h3><p>Choose where it goes</p></div>
+          </div>
+          <div class="entry-fields">
+            <label class="entry-field" for="incomeLabel">Where did it come from?
+              <input class="text-input" id="incomeLabel" name="label" type="text" autocomplete="off" placeholder="Paycheck, babysitting…" required>
+            </label>
+            <label class="entry-field" for="incomeAmount">Amount (฿)
+              <input class="text-input" id="incomeAmount" name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="0.00" required>
+            </label>
+          </div>
+          <div class="chip-row" role="group" aria-label="Quick sources">
+            <button class="chip" type="button" data-label="Pocket money" data-icon="💰">💰 Pocket money</button>
+            <button class="chip" type="button" data-label="Gift" data-icon="🎁">🎁 Gift</button>
+            <button class="chip" type="button" data-label="Sold something" data-icon="🏷️">🏷️ Sold something</button>
+            <button class="chip amount" type="button" data-amount="100">฿100</button>
+            <button class="chip amount" type="button" data-amount="500">฿500</button>
+          </div>
+          <label class="entry-field income-destination" for="incomeDestination">Put this income into
+            <select class="text-input" id="incomeDestination" name="account">
+              <option value="spending">Spending</option>
+              <option value="savings">Savings</option>
+            </select>
+          </label>
+          <div class="entry-actions"><button class="button primary" type="submit">Add income</button></div>
+          <p class="message" data-role="message" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="insightsTitle">
+      <div class="section-heading">
+        <h2 id="insightsTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>This week</h2>
+        <span class="section-hint" id="insightsRange"></span>
+      </div>
+      <div class="panel insights">
+        <div class="chart-wrap">
+          <div class="chart-legend" aria-hidden="true">
+            <span><i class="key in"></i>Money in</span>
+            <span><i class="key out"></i>Money out</span>
+          </div>
+          <div class="chart" id="weekChart" aria-hidden="true"></div>
+          <table class="sr-only" id="weekTable"><caption>Money in and out per day this week</caption></table>
+        </div>
+        <div class="insight-stats">
+          <div class="insight"><span>Money in</span><strong id="weekIn">฿0.00</strong></div>
+          <div class="insight"><span>Money out</span><strong id="weekOut">฿0.00</strong></div>
+          <div class="insight"><span>Net</span><strong id="weekNet">฿0.00</strong></div>
+          <div class="insight"><span>Spent most on</span><strong id="weekTop">—</strong></div>
+        </div>
+      </div>
+      <div class="panel categories">
+        <div class="cat-head">
+          <h3>Where your money goes</h3>
+          <div class="tabs" role="group" aria-label="Time range" id="catRange">
+            <button class="tab" type="button" data-range="week" aria-pressed="false">Week</button>
+            <button class="tab" type="button" data-range="month" aria-pressed="true">Month</button>
+            <button class="tab" type="button" data-range="all" aria-pressed="false">All time</button>
+          </div>
+        </div>
+        <div class="cat-list" id="catList"></div>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-column">
+        <section class="section" aria-labelledby="tasksTitle">
+          <div class="section-heading">
+            <h2 id="tasksTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 7 2 2 4-4M4 17l2 2 4-4M14 7h6M14 17h6"/></svg></span>Tasks</h2>
+            <button class="button quiet" id="manageTasks" type="button" aria-pressed="false">✎ Edit tasks</button>
+          </div>
+          <div class="panel">
+            <div class="task-menu" id="taskMenu" aria-label="Available tasks"></div>
+            <button class="button new-task" id="newTask" type="button" hidden>+ New task</button>
+            <form class="inline-dialog task-editor" id="taskEditor" hidden novalidate>
+              <strong id="taskEditorTitle">New task</strong>
+              <div class="task-editor-fields">
+                <label class="entry-field" for="taskEmoji">Icon
+                  <input class="text-input" id="taskEmoji" type="text" maxlength="4" placeholder="🧹">
+                </label>
+                <label class="entry-field" for="taskName">Task name
+                  <input class="text-input" id="taskName" type="text" maxlength="40" placeholder="Chores, tutoring…">
+                </label>
+                <label class="entry-field" for="taskReward">Pay (฿)
+                  <input class="text-input" id="taskReward" type="number" min="1" step="1" inputmode="decimal" placeholder="100">
+                </label>
+                <label class="entry-field" for="taskType">Paid
+                  <select class="text-input" id="taskType">
+                    <option value="fixed">Fixed amount</option>
+                    <option value="hourly">Per hour</option>
+                  </select>
+                </label>
+              </div>
+              <p class="message" id="taskEditorMessage" role="status" aria-live="polite"></p>
+              <div class="dialog-actions">
+                <button class="button quiet" id="cancelTaskEdit" type="button">Cancel</button>
+                <button class="button primary" type="submit">Save task</button>
+              </div>
+            </form>
+            <h3 class="subhead">My tasks</h3>
+            <div class="task-list" id="taskList"></div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="notesTitle">
+          <div class="section-heading">
+            <h2 id="notesTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>Task log</h2>
+            <span class="section-hint">Monday to Saturday</span>
+          </div>
+          <div class="panel">
+            <div class="week-toolbar">
+              <button class="button quiet week-nav" id="previousWeek" type="button" aria-label="Previous week">‹</button>
+              <strong id="weekLabel"></strong>
+              <button class="button quiet week-nav" id="nextWeek" type="button" aria-label="Next week">›</button>
+            </div>
+            <div class="week-days" id="weekDays" role="group" aria-label="Choose a day, Monday to Saturday"></div>
+            <div class="note-pad">
+              <h3 id="selectedDateTitle"></h3>
+              <div class="note-list" id="dailyNotes"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="section dashboard-history" aria-labelledby="historyTitle">
+        <div class="section-heading">
+          <h2 id="historyTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>History</h2>
+          <span class="section-hint">Newest first</span>
+        </div>
+        <div class="totals" aria-label="Income and spending totals">
+          <div class="total-box"><span>Total earned</span><strong id="totalEarned">฿0.00</strong></div>
+          <div class="total-box spent"><span>Total spent</span><strong id="totalSpent">฿0.00</strong></div>
+        </div>
+        <div class="transfer-summary" aria-labelledby="transferTitle">
+          <div class="transfer-copy">
+            <p id="transferTitle">Weekly earnings to transfer</p>
+            <strong id="weekEarnings">฿0.00</strong>
+            <span class="transfer-status" id="transferStatus" role="status" aria-live="polite"></span>
+          </div>
+          <button class="button primary" id="markTransferred" type="button" disabled>Mark as transferred</button>
+        </div>
+        <div class="history-tools">
+          <div class="tabs" role="group" aria-label="Filter history" id="historyTabs">
+            <button class="tab" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="tab" type="button" data-filter="income" aria-pressed="false">Income</button>
+            <button class="tab" type="button" data-filter="expense" aria-pressed="false">Expenses</button>
+            <button class="tab" type="button" data-filter="set" aria-pressed="false">Transfers</button>
+          </div>
+          <input class="text-input search" id="historySearch" type="search" placeholder="Search…" aria-label="Search history">
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+    </div>
+
+    <section class="section" aria-labelledby="achievementsTitle">
+      <div class="section-heading">
+        <h2 id="achievementsTitle"><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></svg></span>Achievements</h2>
+        <span class="section-hint" id="achievementCount">0 of 0 unlocked</span>
+      </div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </section>
+
+    <div class="footer-tools">
+      <details class="backup">
+        <summary><span class="h-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span>Backup &amp; restore</summary>
+        <div class="backup-content">
+          <p class="backup-note">Your data stays in this browser. Keep a backup code somewhere safe if you want to move it to another device.</p>
+          <div class="backup-actions">
+            <button class="button" id="copyBackup" type="button">Copy backup code</button>
+            <button class="button primary" id="restoreBackup" type="button">Restore</button>
+          </div>
+          <textarea id="backupCode" spellcheck="false" aria-label="Backup code" placeholder="Backup code appears here, or paste one to restore"></textarea>
+          <p class="message" id="backupMessage" role="status" aria-live="polite"></p>
+        </div>
+      </details>
+
+      <section class="reset-zone" aria-label="Reset data">
+        <button class="button quiet danger" id="openReset" type="button">Reset all data</button>
+        <div class="inline-dialog" id="resetDialog" hidden>
+          <strong>Clear all your Cash Cycle data?</strong>
+          <span class="section-hint">This removes your balance, tasks, and history from this device.</span>
+          <div class="dialog-actions">
+            <button class="button quiet" id="cancelReset" type="button">Keep my data</button>
+            <button class="button danger" id="confirmReset" type="button">Clear everything</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <p class="app-footer">Cash Cycle · Your data never leaves this device</p>
+  </main>
+  <div id="confetti" aria-hidden="true"></div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <script>
+    const DEFAULT_TASKS = [
+      { id: "study-sat", label: "📘 Study SAT", reward: 200, tracksHours: true },
+      { id: "study-networking", label: "🌐 Study networking", reward: 100, tracksHours: true },
+      { id: "presence-office", label: "🏢 Presence at office", reward: 300, tracksHours: false }
+    ];
+    const STORAGE_KEY = "cash-cycle-data";
+    function emptyData() {
+      return { accounts: { savings: 0, spending: 0 }, goals: [], taskMenu: DEFAULT_TASKS.map(task => ({ ...task })), history: [], tasks: [], notes: [], transfers: [], achievements: [] };
+    }
+
+    function cleanTaskMenu(list) {
+      if (!Array.isArray(list)) return DEFAULT_TASKS.map(task => ({ ...task }));
+      return list
+        .filter(task => task && typeof task.label === "string" && task.label.trim() && Number.isFinite(Number(task.reward)) && Number(task.reward) > 0)
+        .map(task => ({ id: String(task.id || crypto.randomUUID()), label: task.label.trim().slice(0, 50), reward: Number(task.reward), tracksHours: Boolean(task.tracksHours) }));
+    }
+    function cleanGoal(goal) {
+      if (!goal || !Number.isFinite(Number(goal.amount)) || Number(goal.amount) <= 0) return null;
+      const name = typeof goal.name === "string" && goal.name.trim() && !["Savings goal", "Spending goal"].includes(goal.name.trim()) ? goal.name.trim() : "My goal";
+      return { id: String(goal.id || crypto.randomUUID()), name, amount: Number(goal.amount) };
+    }
+    // Shared by loading and restoring: fixes up old or damaged data
+    function normalizeData(saved) {
+      const savedAccounts = saved.accounts && typeof saved.accounts === "object" ? saved.accounts : { savings: 0, spending: saved.balance };
+      const history = Array.isArray(saved.history) ? saved.history.filter(item => item && Number.isFinite(Number(item.amount)) && typeof item.label === "string" && ["income", "expense", "set"].includes(item.kind || "set")) : [];
+      const visibleHistory = history.filter(item => item.label !== "Accounts set");
+      removedAccountsSetHistory = visibleHistory.length !== history.length;
+      const taskMenu = cleanTaskMenu(saved.taskMenu);
+      return {
+        accounts: { savings: accountAmount(savedAccounts.savings), spending: accountAmount(savedAccounts.spending) },
+        goals: (Array.isArray(saved.goals) ? saved.goals : [saved.goal]).map(cleanGoal).filter(Boolean),
+        taskMenu,
+        history: visibleHistory,
+        tasks: Array.isArray(saved.tasks) ? saved.tasks.filter(task => task && taskMenu.some(option => option.id === task.id)).map(task => ({ id: task.id, instanceId: String(task.instanceId || crypto.randomUUID()) })) : [],
+        notes: Array.isArray(saved.notes) ? saved.notes.filter(note => note && isValidDateKey(note.date) && dateFromKey(note.date).getDay() !== 0 && typeof note.text === "string").map(note => ({ id: String(note.id || crypto.randomUUID()), date: note.date, text: note.text })) : [],
+        transfers: Array.isArray(saved.transfers) ? saved.transfers.filter(transfer => transfer && isValidDateKey(transfer.weekStart) && dateFromKey(transfer.weekStart).getDay() === 1 && Array.isArray(transfer.historyIds)).map(transfer => ({ weekStart: transfer.weekStart, historyIds: transfer.historyIds.map(String) })) : [],
+        achievements: Array.isArray(saved.achievements) ? saved.achievements.map(String) : null
+      };
+    }
+
+    function accountAmount(value) {
+      const amount = Number(value);
+      return Number.isFinite(amount) && amount >= 0 ? amount : 0;
+    }
+
+    function dateKey(date) {
+      return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+    }
+
+    function dateFromKey(value) {
+      const [year, month, day] = value.split("-").map(Number);
+      return new Date(year, month - 1, day, 12);
+    }
+
+    function isValidDateKey(value) {
+      return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && dateKey(dateFromKey(value)) === value;
+    }
+
+    function mondayFor(date) {
+      const monday = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12);
+      monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+      return monday;
+    }
+
+    function defaultNoteDate() {
+      const today = new Date();
+      if (today.getDay() === 0) today.setDate(today.getDate() - 1);
+      return dateKey(today);
+    }
+
+    let removedAccountsSetHistory = false;
+    let data = loadData();
+    let selectedDateKey = defaultNoteDate();
+    let balanceAnimationFrame = 0;
+    let historyFilter = "all";
+    let historySearch = "";
+
+    const balanceAmount = document.getElementById("balanceAmount");
+    const balanceCard = document.getElementById("balanceCard");
+    const saveStatus = document.getElementById("saveStatus");
+
+    function formatMoney(amount) {
+      return "฿" + Number(amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function loadData() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (!saved || typeof saved !== "object") return emptyData();
+        return normalizeData(saved);
+      } catch {
+        return emptyData();
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        saveStatus.textContent = "✓ Saved on this device";
+        saveStatus.classList.remove("error");
+      } catch {
+        saveStatus.textContent = "Not saved";
+        saveStatus.classList.add("error");
+      }
+    }
+
+    let introFrame = 0;
+    function render(animateBalance = false) {
+      clearTimeout(introFrame);
+      document.querySelectorAll("#splitSavings, #splitSpending, .goal-fill").forEach(el => { el.style.transition = ""; });
+      renderBalance(totalBalance(), animateBalance);
+      document.getElementById("savingsBalance").textContent = formatMoney(data.accounts.savings);
+      document.getElementById("spendingBalance").textContent = formatMoney(data.accounts.spending);
+      const total = totalBalance();
+      const savingsShare = total > 0 ? data.accounts.savings / total * 100 : 0;
+      const spendingShare = total > 0 ? 100 - savingsShare : 0;
+      document.getElementById("splitSavings").style.width = savingsShare + "%";
+      document.getElementById("splitSpending").style.width = spendingShare + "%";
+      document.getElementById("savingsShare").textContent = Math.round(savingsShare) + "%";
+      document.getElementById("spendingShare").textContent = Math.round(spendingShare) + "%";
+      const transferredAll = new Set(data.transfers.flatMap(transfer => transfer.historyIds));
+      const taskIncome = data.history.filter(item => item.kind === "income" && item.source === "task");
+      const pendingAll = taskIncome.filter(item => !transferredAll.has(String(item.id))).reduce((sum, item) => sum + Number(item.amount), 0);
+      const thisMonday = dateKey(mondayFor(new Date()));
+      const tasksThisWeek = taskIncome.filter(item => {
+        const created = new Date(item.createdAt);
+        return !Number.isNaN(created.getTime()) && dateKey(created) >= thisMonday;
+      }).length;
+      document.getElementById("pendingAll").textContent = formatMoney(pendingAll);
+      document.getElementById("tasksThisWeek").textContent = String(tasksThisWeek);
+      const streak = taskStreak();
+      document.getElementById("taskStreak").textContent = (streak > 0 ? "🔥 " : "") + streak + (streak === 1 ? " day" : " days");
+      renderInsights();
+      renderCategories();
+      renderSavingsGoal();
+      renderAchievements();
+      renderHistory();
+      renderTasks();
+      renderWeekly();
+      const earned = data.history.filter(item => item.kind === "income").reduce((sum, item) => sum + item.amount, 0);
+      const spent = data.history.filter(item => item.kind === "expense").reduce((sum, item) => sum + item.amount, 0);
+      document.getElementById("totalEarned").textContent = formatMoney(earned);
+      document.getElementById("totalSpent").textContent = formatMoney(spent);
+    }
+
+    function totalBalance() {
+      return data.accounts.savings + data.accounts.spending;
+    }
+
+    // Average weekly change of the Spending account over the last 4 weeks
+    function weeklySpendingPace() {
+      const since = Date.now() - 28 * 24 * 60 * 60 * 1000;
+      let net = 0;
+      for (const item of data.history) {
+        const time = new Date(item.createdAt).getTime();
+        if (!Number.isFinite(time) || time < since) continue;
+        if (item.kind === "income" && item.account === "spending") net += Number(item.amount);
+        if (item.kind === "expense") net -= Number(item.amount);
+        if (item.kind === "set" && Number.isFinite(Number(item.spendingShare))) net += Number(item.spendingShare);
+      }
+      return net / 4;
+    }
+
+    let editingGoalId = null;
+    function renderSavingsGoal() {
+      const list = document.getElementById("goalList");
+      list.replaceChildren();
+      document.getElementById("goalEmpty").hidden = data.goals.length > 0;
+      const saved = data.accounts.spending;
+      const pace = weeklySpendingPace();
+      for (const goal of data.goals) {
+        const percent = Math.min(saved / goal.amount * 100, 100);
+        const item = document.createElement("div");
+        item.className = "goal-item" + (saved >= goal.amount ? " reached" : "");
+        const top = document.createElement("div");
+        top.className = "goal-item-top";
+        const name = document.createElement("strong");
+        name.className = "goal-item-name";
+        name.textContent = (saved >= goal.amount ? "🏁 " : "") + goal.name;
+        const actions = document.createElement("div");
+        actions.className = "goal-item-actions";
+        const edit = document.createElement("button");
+        edit.className = "icon-button";
+        edit.type = "button";
+        edit.textContent = "✎";
+        edit.setAttribute("aria-label", "Edit goal " + goal.name);
+        edit.addEventListener("click", () => openGoalForm(goal));
+        const remove = document.createElement("button");
+        remove.className = "icon-button danger";
+        remove.type = "button";
+        remove.textContent = "✕";
+        remove.setAttribute("aria-label", "Delete goal " + goal.name);
+        remove.addEventListener("click", () => {
+          data.goals = data.goals.filter(entry => entry.id !== goal.id);
+          saveData();
+          renderSavingsGoal();
+          toast("Goal removed: " + goal.name, "bad", "✕");
+        });
+        actions.append(edit, remove);
+        top.append(name, actions);
+        const track = document.createElement("div");
+        track.className = "goal-track";
+        track.setAttribute("role", "progressbar");
+        track.setAttribute("aria-label", goal.name + " progress");
+        track.setAttribute("aria-valuemin", "0");
+        track.setAttribute("aria-valuemax", "100");
+        track.setAttribute("aria-valuenow", String(Math.round(percent)));
+        const fill = document.createElement("div");
+        fill.className = "goal-fill";
+        fill.style.width = percent + "%";
+        track.append(fill);
+        const meta = document.createElement("div");
+        meta.className = "goal-progress-meta";
+        const amounts = document.createElement("span");
+        amounts.textContent = formatMoney(Math.min(saved, goal.amount)) + " of " + formatMoney(goal.amount);
+        const percentEl = document.createElement("strong");
+        percentEl.className = "goal-percent";
+        percentEl.textContent = Math.floor(percent) + "%";
+        meta.append(amounts, percentEl);
+        const status = document.createElement("p");
+        status.className = "goal-status";
+        if (saved >= goal.amount) {
+          status.textContent = "Goal reached! 🎉";
+        } else {
+          const left = goal.amount - saved;
+          let text = formatMoney(left) + " to go";
+          if (pace > 0) {
+            const weeks = Math.ceil(left / pace);
+            text += " · about " + (weeks <= 1 ? "1 week" : weeks + " weeks") + " at your pace";
+          }
+          status.textContent = text;
+        }
+        item.append(top, track, meta, status);
+        list.append(item);
+      }
+    }
+
+    function celebrateSavingsGoal(previousSpending) {
+      const reached = data.goals.filter(goal => previousSpending < goal.amount && data.accounts.spending >= goal.amount);
+      if (!reached.length) return;
+      showConfetti();
+      reached.forEach(goal => toast("Goal reached: " + goal.name + "!", "good", "🏁"));
+    }
+
+    const goalForm = document.getElementById("goalForm");
+    function openGoalForm(goal = null) {
+      editingGoalId = goal ? goal.id : null;
+      goalForm.hidden = false;
+      document.getElementById("goalFormTitle").textContent = goal ? "Edit goal" : "New goal";
+      document.getElementById("goalNameInput").value = goal ? goal.name : "";
+      document.getElementById("goalAmountInput").value = goal ? goal.amount.toFixed(2) : "";
+      document.getElementById("goalMessage").textContent = "";
+      document.getElementById("goalMessage").classList.remove("error");
+      document.getElementById("goalNameInput").focus();
+    }
+
+    function renderBalance(value, animate) {
+      const from = Number(balanceAmount.dataset.value || value);
+      balanceAmount.dataset.value = String(value);
+      cancelAnimationFrame(balanceAnimationFrame);
+      if (!animate || false) {
+        balanceAmount.textContent = formatMoney(value);
+        return;
+      }
+      balanceAmount.classList.remove("bump");
+      void balanceAmount.offsetWidth;
+      balanceAmount.classList.add("bump");
+      const start = performance.now();
+      const duration = 480;
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        balanceAmount.textContent = formatMoney(from + (value - from) * eased);
+        if (progress < 1) balanceAnimationFrame = requestAnimationFrame(tick);
+      }
+      balanceAnimationFrame = requestAnimationFrame(tick);
+    }
+
+    function announceChange(amount, kind) {
+      const marker = document.createElement("span");
+      marker.className = "float-change";
+      marker.textContent = (kind === "expense" ? "−" : kind === "income" ? "+" : "=") + formatMoney(amount);
+      balanceCard.append(marker);
+      marker.addEventListener("animationend", () => marker.remove(), { once: true });
+      if (kind === "expense") {
+        balanceCard.classList.remove("shake");
+        void balanceCard.offsetWidth;
+        balanceCard.classList.add("shake");
+      }
+    }
+
+    function addHistory(label, amount, kind, icon, account = null) {
+      data.history.unshift({ id: crypto.randomUUID(), label, amount, kind, icon, account, createdAt: new Date().toISOString() });
+    }
+
+    // Pop-up notifications (bottom-right)
+    function toast(text, tone = "good", icon = "✓") {
+      const box = document.createElement("div");
+      box.className = "toast " + tone;
+      const iconEl = document.createElement("span");
+      iconEl.className = "toast-icon";
+      iconEl.textContent = icon;
+      const textEl = document.createElement("span");
+      textEl.textContent = text;
+      box.append(iconEl, textEl);
+      const stack = document.getElementById("toasts");
+      stack.append(box);
+      while (stack.children.length > 3) stack.firstElementChild.remove();
+      setTimeout(() => {
+        box.classList.add("out");
+        box.addEventListener("animationend", () => box.remove(), { once: true });
+      }, 3200);
+    }
+
+    function shortMoney(value) {
+      if (value >= 1000) return "฿" + (value / 1000).toFixed(value % 1000 === 0 ? 0 : 1) + "k";
+      return "฿" + Math.round(value);
+    }
+    function niceMax(value) {
+      if (value <= 0) return 100;
+      const power = 10 ** Math.floor(Math.log10(value));
+      const n = value / power;
+      return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * power;
+    }
+
+    // "This week" chart: money in vs out, Monday to Sunday
+    function renderInsights() {
+      const monday = mondayFor(new Date());
+      const todayKey = dateKey(new Date());
+      const days = [];
+      for (let offset = 0; offset < 7; offset++) {
+        const day = new Date(monday);
+        day.setDate(day.getDate() + offset);
+        days.push({ date: day, key: dateKey(day), moneyIn: 0, moneyOut: 0 });
+      }
+      const byKey = Object.fromEntries(days.map(day => [day.key, day]));
+      const spentBy = {};
+      for (const item of data.history) {
+        const created = new Date(item.createdAt);
+        if (Number.isNaN(created.getTime())) continue;
+        const day = byKey[dateKey(created)];
+        if (!day) continue;
+        if (item.kind === "income") day.moneyIn += Number(item.amount);
+        if (item.kind === "expense") {
+          day.moneyOut += Number(item.amount);
+          spentBy[item.label] = (spentBy[item.label] || 0) + Number(item.amount);
+        }
+      }
+      const totalIn = days.reduce((sum, day) => sum + day.moneyIn, 0);
+      const totalOut = days.reduce((sum, day) => sum + day.moneyOut, 0);
+      const net = totalIn - totalOut;
+      const topEntry = Object.entries(spentBy).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById("weekIn").textContent = formatMoney(totalIn);
+      document.getElementById("weekOut").textContent = formatMoney(totalOut);
+      const netEl = document.getElementById("weekNet");
+      netEl.textContent = (net < 0 ? "−" : "+") + formatMoney(Math.abs(net));
+      netEl.style.color = net < 0 ? "#fda4af" : net > 0 ? "#6ee7b7" : "";
+      document.getElementById("weekTop").textContent = topEntry ? topEntry[0] : "—";
+      document.getElementById("insightsRange").textContent = days[0].date.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " – " + days[6].date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+      const scaleTop = niceMax(Math.max(...days.map(day => Math.max(day.moneyIn, day.moneyOut))));
+      const chart = document.getElementById("weekChart");
+      chart.replaceChildren();
+      const grid = document.createElement("div");
+      grid.className = "chart-grid";
+      [1, .5, 0].forEach(step => {
+        const line = document.createElement("div");
+        line.className = "grid-line" + (step === 0 ? " base" : "");
+        line.style.top = (1 - step) * 100 + "%";
+        const label = document.createElement("span");
+        label.textContent = shortMoney(scaleTop * step);
+        line.append(label);
+        grid.append(line);
+      });
+      chart.append(grid);
+      const columns = document.createElement("div");
+      columns.className = "chart-days";
+      const bars = [];
+      for (const day of days) {
+        const column = document.createElement("div");
+        column.className = "chart-day" + (day.key === todayKey ? " today" : "");
+        column.tabIndex = 0;
+        const barWrap = document.createElement("div");
+        barWrap.className = "chart-bars";
+        for (const [kind, value] of [["in", day.moneyIn], ["out", day.moneyOut]]) {
+          const bar = document.createElement("div");
+          bar.className = "bar " + kind + (value > 0 ? " has" : "");
+          barWrap.append(bar);
+          bars.push([bar, value / scaleTop * 100]);
+        }
+        const label = document.createElement("span");
+        label.className = "chart-label";
+        label.textContent = day.key === todayKey ? "Today" : day.date.toLocaleDateString(undefined, { weekday: "short" });
+        const tip = document.createElement("div");
+        tip.className = "chart-tip";
+        const tipTitle = document.createElement("b");
+        tipTitle.textContent = day.date.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+        tip.append(tipTitle);
+        for (const [name, value, color] of [["In", day.moneyIn, "var(--green)"], ["Out", day.moneyOut, "var(--rose)"]]) {
+          const row = document.createElement("div");
+          const left = document.createElement("span");
+          const key = document.createElement("i");
+          key.style.background = color;
+          left.append(key, document.createTextNode(name));
+          const right = document.createElement("strong");
+          right.textContent = formatMoney(value);
+          row.append(left, right);
+          tip.append(row);
+        }
+        column.append(barWrap, label, tip);
+        columns.append(column);
+      }
+      chart.append(columns);
+      if (totalIn === 0 && totalOut === 0) {
+        const empty = document.createElement("div");
+        empty.className = "chart-empty";
+        empty.textContent = "No money in or out yet this week";
+        chart.append(empty);
+      }
+      setTimeout(() => bars.forEach(([bar, height]) => { bar.style.height = height + "%"; }), 40);
+
+      const table = document.getElementById("weekTable");
+      table.querySelectorAll("tr").forEach(row => row.remove());
+      const head = table.insertRow();
+      ["Day", "Money in", "Money out"].forEach(text => { const cell = document.createElement("th"); cell.textContent = text; head.append(cell); });
+      for (const day of days) {
+        const row = table.insertRow();
+        [day.date.toLocaleDateString(undefined, { weekday: "long" }), formatMoney(day.moneyIn), formatMoney(day.moneyOut)].forEach(text => { row.insertCell().textContent = text; });
+      }
+    }
+
+    // Spending by category (expense label), for week / month / all time
+    let categoryRange = "month";
+    function renderCategories() {
+      const now = new Date();
+      const start = categoryRange === "week" ? mondayFor(now)
+        : categoryRange === "month" ? new Date(now.getFullYear(), now.getMonth(), 1)
+        : new Date(0);
+      start.setHours(0, 0, 0, 0);
+      const groups = new Map();
+      for (const item of data.history) {
+        if (item.kind !== "expense") continue;
+        const created = new Date(item.createdAt);
+        if (Number.isNaN(created.getTime()) || created < start) continue;
+        const key = item.label.trim().toLowerCase();
+        const group = groups.get(key) || { label: item.label.trim(), icon: item.icon && item.icon !== "↘" ? item.icon : "", total: 0, count: 0 };
+        group.total += Number(item.amount);
+        group.count++;
+        groups.set(key, group);
+      }
+      let rows = [...groups.values()].sort((a, b) => b.total - a.total);
+      if (rows.length > 6) {
+        const rest = rows.slice(5);
+        rows = rows.slice(0, 5).concat({ label: "Other", icon: "•", total: rest.reduce((sum, row) => sum + row.total, 0), count: rest.reduce((sum, row) => sum + row.count, 0) });
+      }
+      const grand = rows.reduce((sum, row) => sum + row.total, 0);
+      const top = rows.length ? rows[0].total : 0;
+      const list = document.getElementById("catList");
+      list.replaceChildren();
+      if (!rows.length) {
+        list.innerHTML = '<div class="empty-state">No expenses in this period yet.</div>';
+        return;
+      }
+      rows.forEach((row, index) => {
+        const item = document.createElement("div");
+        item.className = "cat-row";
+        item.style.animationDelay = index * 50 + "ms";
+        const icon = document.createElement("span");
+        icon.className = "cat-icon";
+        icon.textContent = row.icon || "↘";
+        const body = document.createElement("div");
+        body.className = "cat-body";
+        const line = document.createElement("div");
+        line.className = "cat-line";
+        const name = document.createElement("span");
+        name.className = "cat-name";
+        name.textContent = row.label;
+        const value = document.createElement("span");
+        value.className = "cat-value";
+        value.textContent = formatMoney(row.total) + " · " + Math.round(row.total / grand * 100) + "%";
+        line.append(name, value);
+        const track = document.createElement("div");
+        track.className = "cat-track";
+        const bar = document.createElement("div");
+        bar.className = "cat-bar";
+        track.append(bar);
+        body.append(line, track);
+        item.append(icon, body);
+        item.title = row.count + (row.count === 1 ? " expense" : " expenses");
+        list.append(item);
+        setTimeout(() => { bar.style.width = row.total / top * 100 + "%"; }, 60 + index * 50);
+      });
+    }
+    document.querySelectorAll("#catRange .tab").forEach(tab => tab.addEventListener("click", () => {
+      categoryRange = tab.dataset.range;
+      document.querySelectorAll("#catRange .tab").forEach(other => other.setAttribute("aria-pressed", String(other === tab)));
+      renderCategories();
+    }));
+
+    // Achievements: unlocked once, kept forever
+    function tasksDoneCount() {
+      return data.history.filter(item => item.kind === "income" && (item.source === "task" || item.icon === "🎉")).length;
+    }
+    const ACHIEVEMENTS = [
+      { id: "first-expense", icon: "🧾", title: "First step", desc: "Log your first expense", target: 1, value: () => data.history.filter(item => item.kind === "expense").length },
+      { id: "first-task", icon: "✅", title: "Getting started", desc: "Finish your first task", target: 1, value: tasksDoneCount },
+      { id: "tasks-10", icon: "💪", title: "Hard worker", desc: "Finish 10 tasks", target: 10, value: tasksDoneCount },
+      { id: "tasks-50", icon: "🏆", title: "Unstoppable", desc: "Finish 50 tasks", target: 50, value: tasksDoneCount },
+      { id: "streak-3", icon: "🔥", title: "On fire", desc: "Reach a 3-day task streak", target: 3, value: () => taskStreak() },
+      { id: "streak-7", icon: "⚡", title: "Full week", desc: "Reach a 7-day task streak", target: 7, value: () => taskStreak() },
+      { id: "save-1k", icon: "🐷", title: "Piggy bank", desc: "Have ฿1,000 in Savings", target: 1000, money: true, value: () => data.accounts.savings },
+      { id: "save-10k", icon: "💎", title: "Big saver", desc: "Have ฿10,000 in Savings", target: 10000, money: true, value: () => data.accounts.savings },
+      { id: "earned-5k", icon: "💰", title: "Money maker", desc: "Earn ฿5,000 in total", target: 5000, money: true, value: () => data.history.filter(item => item.kind === "income").reduce((sum, item) => sum + Number(item.amount), 0) },
+      { id: "first-transfer", icon: "🔁", title: "Moving money", desc: "Mark your first transfer", target: 1, value: () => data.history.filter(item => item.kind === "set" && item.label.startsWith("Transferred")).length },
+      { id: "goal-reached", icon: "🎯", title: "Dream achieved", desc: "Reach one of your goals", target: 1, value: () => data.goals.filter(goal => data.accounts.spending >= goal.amount).length },
+      { id: "bookkeeper", icon: "📒", title: "Bookkeeper", desc: "Log 25 entries", target: 25, value: () => data.history.length }
+    ];
+    function renderAchievements() {
+      const results = ACHIEVEMENTS.map(badge => ({ badge, value: badge.value() }));
+      const qualifying = results.filter(result => result.value >= result.badge.target).map(result => result.badge.id);
+      if (data.achievements === null) {
+        data.achievements = qualifying;
+        saveData();
+      } else {
+        const fresh = qualifying.filter(id => !data.achievements.includes(id));
+        if (fresh.length) {
+          data.achievements.push(...fresh);
+          saveData();
+          fresh.forEach((id, index) => {
+            const badge = ACHIEVEMENTS.find(entry => entry.id === id);
+            setTimeout(() => toast("Achievement unlocked: " + badge.title, "good", badge.icon), 400 + index * 600);
+          });
+          setTimeout(showConfetti, 400);
+        }
+      }
+      const grid = document.getElementById("badgeGrid");
+      grid.replaceChildren();
+      let unlockedCount = 0;
+      for (const { badge, value } of results) {
+        const unlocked = data.achievements.includes(badge.id);
+        if (unlocked) unlockedCount++;
+        const card = document.createElement("div");
+        card.className = "badge" + (unlocked ? " unlocked" : "");
+        const icon = document.createElement("span");
+        icon.className = "badge-icon";
+        icon.textContent = badge.icon;
+        const title = document.createElement("strong");
+        title.textContent = badge.title;
+        const desc = document.createElement("span");
+        desc.className = "badge-desc";
+        desc.textContent = badge.desc;
+        card.append(icon, title, desc);
+        if (!unlocked) {
+          const progress = Math.min(value / badge.target, 1);
+          const track = document.createElement("div");
+          track.className = "badge-track";
+          const fill = document.createElement("div");
+          fill.style.width = progress * 100 + "%";
+          track.append(fill);
+          const count = document.createElement("span");
+          count.className = "badge-count";
+          count.textContent = badge.money
+            ? formatMoney(Math.min(value, badge.target)).replace(".00", "") + " / " + formatMoney(badge.target).replace(".00", "")
+            : Math.min(value, badge.target) + " / " + badge.target;
+          card.append(track, count);
+        } else {
+          const done = document.createElement("span");
+          done.className = "badge-done";
+          done.textContent = "Unlocked";
+          card.append(done);
+        }
+        grid.append(card);
+      }
+      document.getElementById("achievementCount").textContent = unlockedCount + " of " + ACHIEVEMENTS.length + " unlocked";
+    }
+
+    // Days in a row with a finished task (Sundays are skipped, not counted)
+    function taskStreak() {
+      const doneDays = new Set(data.notes.map(note => note.date));
+      for (const item of data.history) {
+        if (item.source !== "task") continue;
+        const created = new Date(item.createdAt);
+        if (!Number.isNaN(created.getTime())) doneDays.add(dateKey(created));
+      }
+      const cursor = new Date();
+      if (!doneDays.has(dateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+      let streak = 0;
+      for (let guard = 0; guard < 1000; guard++) {
+        if (cursor.getDay() === 0) { cursor.setDate(cursor.getDate() - 1); continue; }
+        if (!doneDays.has(dateKey(cursor))) break;
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function renderHistory() {
+      const list = document.getElementById("historyList");
+      list.replaceChildren();
+      if (data.history.length === 0) {
+        list.innerHTML = '<div class="empty-state">Your money story starts here.</div>';
+        return;
+      }
+      const query = historySearch.trim().toLowerCase();
+      const visible = data.history.filter(item =>
+        (historyFilter === "all" || item.kind === historyFilter) &&
+        (!query || item.label.toLowerCase().includes(query)));
+      if (!visible.length) {
+        list.innerHTML = '<div class="empty-state">Nothing matches that filter.</div>';
+        return;
+      }
+      for (const item of visible) {
+        const row = document.createElement("article");
+        row.className = "history-item";
+        row.style.animationDelay = Math.min(list.children.length, 12) * 35 + "ms";
+        const icon = document.createElement("span");
+        icon.className = "item-icon " + (item.kind === "income" ? "income" : item.kind === "expense" ? "expense" : "set");
+        icon.textContent = item.icon || (item.kind === "income" ? "↗" : item.kind === "expense" ? "↘" : "＝");
+        const copy = document.createElement("div");
+        copy.className = "item-copy";
+        const label = document.createElement("div");
+        label.className = "item-label";
+        label.textContent = item.label;
+        const date = document.createElement("div");
+        date.className = "item-date";
+        const parsedDate = new Date(item.createdAt);
+        date.textContent = Number.isNaN(parsedDate.getTime()) ? "Date unavailable" : parsedDate.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+        if (item.source === "task") {
+          const transferred = data.transfers.some(transfer => transfer.historyIds.includes(String(item.id)));
+          date.textContent += transferred ? " · Transferred" : " · Waiting to transfer";
+        }
+        const amount = document.createElement("span");
+        amount.className = "item-amount " + (item.kind === "income" ? "income" : item.kind === "expense" ? "expense" : "set");
+        amount.textContent = (item.kind === "income" ? "+" : item.kind === "expense" ? "−" : "=") + formatMoney(item.amount);
+        copy.append(label, date);
+        row.append(icon, copy, amount);
+        list.append(row);
+      }
+    }
+
+    function renderWeekly() {
+      const selectedDate = dateFromKey(selectedDateKey);
+      const weekStart = mondayFor(selectedDate);
+      const weekStartKey = dateKey(weekStart);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      const weekEndKey = dateKey(weekEnd);
+      const lastNoteDay = new Date(weekStart);
+      lastNoteDay.setDate(lastNoteDay.getDate() + 5);
+      document.getElementById("weekLabel").textContent = weekStart.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " – " + lastNoteDay.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+
+      const weekDays = document.getElementById("weekDays");
+      weekDays.replaceChildren();
+      for (let offset = 0; offset < 6; offset++) {
+        const day = new Date(weekStart);
+        day.setDate(day.getDate() + offset);
+        const key = dateKey(day);
+        const button = document.createElement("button");
+        button.className = "week-day";
+        button.type = "button";
+        button.setAttribute("aria-pressed", String(key === selectedDateKey));
+        button.setAttribute("aria-label", day.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" }));
+        const weekday = document.createElement("span");
+        weekday.textContent = day.toLocaleDateString(undefined, { weekday: "short" });
+        const dayNumber = document.createElement("strong");
+        dayNumber.textContent = String(day.getDate());
+        button.append(weekday, dayNumber);
+        button.addEventListener("click", () => {
+          selectedDateKey = key;
+          renderWeekly();
+        });
+        weekDays.append(button);
+      }
+
+      document.getElementById("selectedDateTitle").textContent = selectedDate.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+      const dailyNotes = document.getElementById("dailyNotes");
+      dailyNotes.replaceChildren();
+      const notes = data.notes.filter(note => note.date === selectedDateKey).slice().reverse();
+      if (!notes.length) {
+        const empty = document.createElement("p");
+        empty.className = "note-empty";
+        empty.textContent = "Completed tasks will appear here.";
+        dailyNotes.append(empty);
+      }
+      for (const note of notes) {
+        const row = document.createElement("div");
+        row.className = "note-item";
+        const text = document.createElement("span");
+        text.className = "note-text";
+        text.textContent = note.text;
+        const remove = document.createElement("button");
+        remove.className = "note-remove";
+        remove.type = "button";
+        remove.textContent = "✕";
+        remove.setAttribute("aria-label", "Remove note: " + note.text);
+        remove.addEventListener("click", () => {
+          data.notes = data.notes.filter(entry => entry.id !== note.id);
+          saveData();
+          renderWeekly();
+        });
+        row.append(text, remove);
+        dailyNotes.append(row);
+      }
+
+      const weeklyIncome = data.history.filter(item => {
+        if (item.kind !== "income" || item.source !== "task" || !item.createdAt) return false;
+        const created = new Date(item.createdAt);
+        if (Number.isNaN(created.getTime())) return false;
+        const key = dateKey(created);
+        return key >= weekStartKey && key <= weekEndKey;
+      });
+      let transfer = data.transfers.find(item => item.weekStart === weekStartKey);
+      if (!transfer) transfer = { weekStart: weekStartKey, historyIds: [] };
+      const transferredIds = new Set(transfer.historyIds);
+      const pendingIncome = weeklyIncome.filter(item => item.id && !transferredIds.has(String(item.id)));
+      const pendingTotal = pendingIncome.reduce((sum, item) => sum + Number(item.amount), 0);
+      document.getElementById("weekEarnings").textContent = formatMoney(pendingTotal);
+      document.getElementById("markTransferred").disabled = pendingIncome.length === 0;
+      const pendingSplit = splitTransfer(pendingTotal);
+      document.getElementById("transferStatus").textContent = pendingIncome.length
+        ? "When marked: " + formatMoney(pendingSplit.spending) + " → Spending (¼), " + formatMoney(pendingSplit.savings) + " → Savings (¾)."
+        : weeklyIncome.length ? "All this week's task earnings are transferred." : "Task earnings wait here until you transfer them.";
+    }
+
+    document.getElementById("previousWeek").addEventListener("click", () => {
+      const date = dateFromKey(selectedDateKey);
+      date.setDate(date.getDate() - 7);
+      selectedDateKey = dateKey(date);
+      renderWeekly();
+    });
+    document.getElementById("nextWeek").addEventListener("click", () => {
+      const date = dateFromKey(selectedDateKey);
+      date.setDate(date.getDate() + 7);
+      selectedDateKey = dateKey(date);
+      renderWeekly();
+    });
+    document.getElementById("markTransferred").addEventListener("click", () => {
+      const weekStartKey = dateKey(mondayFor(dateFromKey(selectedDateKey)));
+      const transfer = data.transfers.find(item => item.weekStart === weekStartKey) || { weekStart: weekStartKey, historyIds: [] };
+      const transferredIds = new Set(transfer.historyIds);
+      const monday = dateFromKey(weekStartKey);
+      const weekEnd = new Date(monday);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      const pendingIds = data.history.filter(item => {
+        if (item.kind !== "income" || item.source !== "task" || !item.id || !item.createdAt) return false;
+        const created = new Date(item.createdAt);
+        if (Number.isNaN(created.getTime())) return false;
+        const key = dateKey(created);
+        return key >= weekStartKey && key <= dateKey(weekEnd) && !transferredIds.has(String(item.id));
+      });
+      if (!pendingIds.length) return;
+      const total = pendingIds.reduce((sum, item) => sum + Number(item.amount), 0);
+      const split = splitTransfer(total);
+      const previousSpending = data.accounts.spending;
+      data.accounts.spending += split.spending;
+      data.accounts.savings += split.savings;
+      transfer.historyIds.push(...pendingIds.map(item => String(item.id)));
+      if (!data.transfers.some(item => item.weekStart === weekStartKey)) data.transfers.push(transfer);
+      addHistory("Transferred: " + formatMoney(split.spending) + " to Spending, " + formatMoney(split.savings) + " to Savings", total, "set", "⇄");
+      data.history[0].spendingShare = split.spending;
+      saveData();
+      render(true);
+      celebrateSavingsGoal(previousSpending);
+      announceChange(total, "income");
+      toast(formatMoney(split.spending) + " → Spending, " + formatMoney(split.savings) + " → Savings", "info", "⇄");
+      showConfetti();
+    });
+
+    // Custom tasks: edit mode, add / edit / delete
+    let manageTasks = false;
+    let editingTaskId = null;
+    const taskEditor = document.getElementById("taskEditor");
+    function openTaskEditor(task = null) {
+      editingTaskId = task ? task.id : null;
+      const match = task ? task.label.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u) : null;
+      document.getElementById("taskEditorTitle").textContent = task ? "Edit task" : "New task";
+      document.getElementById("taskEmoji").value = match ? match[1] : "";
+      document.getElementById("taskName").value = task ? (match ? match[2] : task.label) : "";
+      document.getElementById("taskReward").value = task ? String(task.reward) : "";
+      document.getElementById("taskType").value = task && task.tracksHours ? "hourly" : "fixed";
+      document.getElementById("taskEditorMessage").textContent = "";
+      taskEditor.hidden = false;
+      document.getElementById("taskName").focus();
+    }
+    document.getElementById("manageTasks").addEventListener("click", event => {
+      manageTasks = !manageTasks;
+      event.currentTarget.setAttribute("aria-pressed", String(manageTasks));
+      event.currentTarget.textContent = manageTasks ? "✓ Done editing" : "✎ Edit tasks";
+      if (!manageTasks) taskEditor.hidden = true;
+      renderTasks();
+    });
+    document.getElementById("newTask").addEventListener("click", () => openTaskEditor());
+    document.getElementById("cancelTaskEdit").addEventListener("click", () => { taskEditor.hidden = true; });
+    taskEditor.addEventListener("submit", event => {
+      event.preventDefault();
+      const message = document.getElementById("taskEditorMessage");
+      const emoji = document.getElementById("taskEmoji").value.trim();
+      const name = document.getElementById("taskName").value.trim();
+      const reward = Number(document.getElementById("taskReward").value);
+      if (!name) {
+        message.textContent = "Give the task a name.";
+        message.classList.add("error");
+        return;
+      }
+      if (!Number.isFinite(reward) || reward <= 0) {
+        message.textContent = "Enter how much it pays (more than ฿0).";
+        message.classList.add("error");
+        return;
+      }
+      const values = { label: (emoji ? emoji + " " : "") + name, reward, tracksHours: document.getElementById("taskType").value === "hourly" };
+      const existing = data.taskMenu.find(task => task.id === editingTaskId);
+      if (existing) Object.assign(existing, values);
+      else data.taskMenu.push({ id: crypto.randomUUID(), ...values });
+      taskEditor.hidden = true;
+      saveData();
+      renderTasks();
+      toast((existing ? "Task updated: " : "Task added: ") + values.label, "good", "✓");
+    });
+
+    function splitTransfer(total) {
+      const spending = Math.round(total * 25) / 100;
+      return { spending, savings: Math.round((total - spending) * 100) / 100 };
+    }
+
+    function renderTasks() {
+      const menu = document.getElementById("taskMenu");
+      menu.replaceChildren();
+      document.getElementById("newTask").hidden = !manageTasks;
+      if (!data.taskMenu.length) {
+        menu.innerHTML = '<div class="empty-state">No tasks in your list. Tap “Edit tasks” to create one.</div>';
+      }
+      for (const task of data.taskMenu) {
+        const row = document.createElement("div");
+        row.className = "task-option" + (manageTasks ? " managing" : "");
+        const name = document.createElement("span");
+        name.className = "task-option-name";
+        name.textContent = task.label;
+        const rewardDescription = task.tracksHours ? formatMoney(task.reward) + "/hour" : formatMoney(task.reward);
+        if (manageTasks) {
+          const controls = document.createElement("div");
+          controls.className = "task-option-controls";
+          const rate = document.createElement("span");
+          rate.className = "task-option-reward";
+          rate.textContent = rewardDescription;
+          const edit = document.createElement("button");
+          edit.className = "icon-button";
+          edit.type = "button";
+          edit.textContent = "✎";
+          edit.setAttribute("aria-label", "Edit task " + task.label);
+          edit.addEventListener("click", () => openTaskEditor(task));
+          const remove = document.createElement("button");
+          remove.className = "icon-button danger";
+          remove.type = "button";
+          remove.textContent = "✕";
+          remove.setAttribute("aria-label", "Delete task " + task.label);
+          remove.addEventListener("click", () => {
+            data.taskMenu = data.taskMenu.filter(option => option.id !== task.id);
+            data.tasks = data.tasks.filter(entry => entry.id !== task.id);
+            saveData();
+            renderTasks();
+            toast("Task deleted: " + task.label, "bad", "✕");
+          });
+          controls.append(rate, edit, remove);
+          row.append(name, controls);
+        } else {
+          const addButton = document.createElement("button");
+          addButton.className = "button quiet";
+          addButton.type = "button";
+          addButton.textContent = "+ Add · " + rewardDescription;
+          addButton.setAttribute("aria-label", "Add " + task.label + " for " + rewardDescription);
+          addButton.addEventListener("click", () => {
+            data.tasks.push({ id: task.id, instanceId: crypto.randomUUID() });
+            saveData();
+            renderTasks();
+          });
+          row.append(name, addButton);
+        }
+        menu.append(row);
+      }
+
+      const list = document.getElementById("taskList");
+      list.replaceChildren();
+      if (!data.tasks.length) {
+        list.innerHTML = '<div class="empty-state">No tasks yet. Choose one above.</div>';
+        return;
+      }
+      for (const userTask of data.tasks) {
+        const task = data.taskMenu.find(option => option.id === userTask.id);
+        if (!task) continue;
+        const row = document.createElement("div");
+        row.className = "task-item";
+        const copy = document.createElement("div");
+        copy.className = "item-copy";
+        const label = document.createElement("div");
+        label.className = "item-label";
+        label.textContent = task.label;
+        const reward = document.createElement("div");
+        reward.className = "item-date";
+        reward.textContent = task.tracksHours
+          ? "Rate: " + formatMoney(task.reward) + " per hour"
+          : "Reward: " + formatMoney(task.reward);
+        copy.append(label, reward);
+        const actions = document.createElement("div");
+        actions.className = "task-actions";
+        const done = document.createElement("button");
+        done.className = "button primary";
+        done.type = "button";
+        done.textContent = "✓ Done";
+        let hoursInput = null;
+        let hoursError = null;
+        done.addEventListener("click", () => {
+          let hours = null;
+          if (task.tracksHours) {
+            if (!hoursInput) {
+              const hoursField = document.createElement("label");
+              hoursField.className = "study-hours";
+              hoursField.textContent = /study/i.test(task.label) ? "How many hours did you study?" : "How many hours did it take?";
+              hoursInput = document.createElement("input");
+              hoursInput.className = "text-input";
+              hoursInput.type = "number";
+              hoursInput.min = "0.5";
+              hoursInput.step = "0.5";
+              hoursInput.inputMode = "decimal";
+              hoursInput.placeholder = "e.g. 1.5";
+              const timeDescription = /study/i.test(task.label) ? "Hours studied" : "Hours";
+              hoursInput.setAttribute("aria-label", timeDescription + ", in half-hour steps");
+              hoursError = document.createElement("span");
+              hoursError.className = "study-hours-error";
+              hoursField.append(hoursInput, hoursError);
+              copy.append(hoursField);
+              done.textContent = "Enter hours";
+              hoursInput.focus();
+              return;
+            }
+            hours = Number(hoursInput.value);
+            if (!hoursInput.value || !Number.isFinite(hours) || hours < 0.5 || Math.abs(hours * 2 - Math.round(hours * 2)) > 0.0001) {
+              hoursError.textContent = "Enter 0.5 hours or more in half-hour steps.";
+              hoursInput.focus();
+              return;
+            }
+          }
+          const earned = task.tracksHours ? task.reward * hours : task.reward;
+          addHistory(task.label, earned, "income", "🎉", null);
+          data.history[0].source = "task";
+          selectedDateKey = defaultNoteDate();
+          const hoursNote = hours === null ? "" : hours + (hours === 1 ? " hour, " : " hours, ");
+          data.notes.push({
+            id: crypto.randomUUID(),
+            date: selectedDateKey,
+            text: task.label + " completed (" + hoursNote + "+" + formatMoney(earned) + ")"
+          });
+          data.tasks = data.tasks.filter(entry => entry.instanceId !== userTask.instanceId);
+          saveData();
+          render(true);
+          showConfetti();
+          toast("+" + formatMoney(earned) + " earned · waiting to transfer", "good", "🎉");
+        });
+        const remove = document.createElement("button");
+        remove.className = "button quiet";
+        remove.type = "button";
+        remove.textContent = "✕";
+        remove.setAttribute("aria-label", "Remove " + task.label + " without reward");
+        remove.addEventListener("click", () => {
+          row.classList.add("removing");
+          row.addEventListener("animationend", () => {
+            data.tasks = data.tasks.filter(entry => entry.instanceId !== userTask.instanceId);
+            saveData();
+            renderTasks();
+          }, { once: true });
+        });
+        actions.append(done, remove);
+        row.append(copy, actions);
+        list.append(row);
+      }
+    }
+
+    function showConfetti() {
+      if (false) return;
+      const layer = document.getElementById("confetti");
+      const colors = ["#4ade80", "#facc15", "#7dd3fc", "#fb7185", "#c4b5fd"];
+      for (let index = 0; index < 36; index++) {
+        const piece = document.createElement("i");
+        piece.className = "confetti-piece";
+        piece.style.left = (30 + Math.random() * 40) + "vw";
+        piece.style.background = colors[index % colors.length];
+        piece.style.setProperty("--drift", ((Math.random() - .5) * 260) + "px");
+        piece.style.animationDelay = (Math.random() * .18) + "s";
+        layer.append(piece);
+        piece.addEventListener("animationend", () => piece.remove(), { once: true });
+      }
+    }
+
+    function handleEntry(event, direction) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const labelInput = form.elements.label;
+      const amountInput = form.elements.amount;
+      const message = form.querySelector('[data-role="message"]');
+      const label = labelInput.value.trim();
+      const amount = Number(amountInput.value);
+      if (!label) {
+        message.textContent = "Add a short description, like lunch or wages.";
+        message.classList.add("error");
+        return;
+      }
+      if (!amountInput.value || !Number.isFinite(amount) || amount <= 0) {
+        message.textContent = "Enter an amount greater than zero.";
+        message.classList.add("error");
+        return;
+      }
+      const account = direction === "income" ? form.elements.account.value : "spending";
+      if (direction === "expense" && amount > data.accounts.spending) {
+        message.textContent = "Not enough money in Spending. Adjust your account amounts first.";
+        message.classList.add("error");
+        return;
+      }
+      const previousSpending = data.accounts.spending;
+      data.accounts[account] += direction === "income" ? amount : -amount;
+      const chipIcon = form.dataset.icon && form.dataset.chipLabel === label ? form.dataset.icon : "";
+      addHistory(label, amount, direction, chipIcon || (direction === "income" ? "↗" : "↘"), account);
+      saveData();
+      render(true);
+      if (account === "spending") celebrateSavingsGoal(previousSpending);
+      announceChange(amount, direction);
+      labelInput.value = "";
+      amountInput.value = "";
+      clearChips(form);
+      message.textContent = "";
+      message.classList.remove("error");
+      toast(direction === "income"
+        ? "+" + formatMoney(amount) + " " + label + " → " + (account === "savings" ? "Savings" : "Spending")
+        : "−" + formatMoney(amount) + " " + label, direction === "income" ? "good" : "bad", chipIcon || (direction === "income" ? "↗" : "↘"));
+      labelInput.focus();
+    }
+
+    // Quick chips: one tap fills the label (with an icon) or the amount
+    function clearChips(form) {
+      delete form.dataset.icon;
+      delete form.dataset.chipLabel;
+      form.querySelectorAll(".chip:not(.amount)").forEach(chip => chip.setAttribute("aria-pressed", "false"));
+    }
+    document.querySelectorAll(".entry-form").forEach(form => {
+      clearChips(form);
+      form.elements.label.addEventListener("input", () => {
+        if (form.elements.label.value.trim() !== form.dataset.chipLabel) clearChips(form);
+      });
+      form.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => {
+        if (chip.dataset.amount) {
+          form.elements.amount.value = chip.dataset.amount;
+          if (!form.elements.label.value.trim()) form.elements.label.focus();
+          return;
+        }
+        form.elements.label.value = chip.dataset.label;
+        form.dataset.icon = chip.dataset.icon;
+        form.dataset.chipLabel = chip.dataset.label;
+        form.querySelectorAll(".chip:not(.amount)").forEach(other => other.setAttribute("aria-pressed", String(other === chip)));
+        form.elements.amount.focus();
+      }));
+    });
+
+    document.getElementById("expenseForm").addEventListener("submit", event => handleEntry(event, "expense"));
+    document.getElementById("incomeForm").addEventListener("submit", event => handleEntry(event, "income"));
+
+    const setBalanceForm = document.getElementById("setBalanceForm");
+    document.getElementById("openSetBalance").addEventListener("click", () => {
+      setBalanceForm.hidden = false;
+      document.getElementById("totalMoneyInput").value = totalBalance().toFixed(2);
+      document.getElementById("savingsInput").value = data.accounts.savings.toFixed(2);
+      document.getElementById("spendingInput").value = data.accounts.spending.toFixed(2);
+      document.getElementById("accountSetupMessage").textContent = "Savings and Spending must add up to your total money.";
+      document.getElementById("accountSetupMessage").classList.remove("error");
+      document.getElementById("totalMoneyInput").focus();
+    });
+    document.getElementById("cancelSetBalance").addEventListener("click", () => { setBalanceForm.hidden = true; });
+    setBalanceForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const totalInput = document.getElementById("totalMoneyInput");
+      const savingsInput = document.getElementById("savingsInput");
+      const spendingInput = document.getElementById("spendingInput");
+      const message = document.getElementById("accountSetupMessage");
+      const total = Number(totalInput.value);
+      const savings = Number(savingsInput.value);
+      const spending = Number(spendingInput.value);
+      if ([totalInput, savingsInput, spendingInput].some(input => !input.value) || ![total, savings, spending].every(value => Number.isFinite(value) && value >= 0)) {
+        message.textContent = "Enter zero or more for the total and both account amounts.";
+        message.classList.add("error");
+        return;
+      }
+      if (Math.abs(savings + spending - total) > 0.005) {
+        message.textContent = "Savings and Spending must add up to your total money.";
+        message.classList.add("error");
+        return;
+      }
+      const previousSpending = data.accounts.spending;
+      data.accounts = { savings, spending };
+      saveData();
+      render(true);
+      celebrateSavingsGoal(previousSpending);
+      announceChange(total, "set");
+      setBalanceForm.hidden = true;
+      toast("Accounts saved", "info", "✓");
+    });
+
+    document.getElementById("addGoal").addEventListener("click", () => openGoalForm());
+    document.getElementById("cancelGoal").addEventListener("click", () => { goalForm.hidden = true; });
+    goalForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const amountInput = document.getElementById("goalAmountInput");
+      const message = document.getElementById("goalMessage");
+      const amount = Number(amountInput.value);
+      const name = document.getElementById("goalNameInput").value.trim();
+      if (!name) {
+        message.textContent = "Give your goal a name.";
+        message.classList.add("error");
+        return;
+      }
+      if (!amountInput.value || !Number.isFinite(amount) || amount <= 0) {
+        message.textContent = "Enter a goal amount greater than zero.";
+        message.classList.add("error");
+        return;
+      }
+      const existing = data.goals.find(goal => goal.id === editingGoalId);
+      if (existing) Object.assign(existing, { name, amount });
+      else data.goals.push({ id: crypto.randomUUID(), name, amount });
+      goalForm.hidden = true;
+      saveData();
+      render();
+      if (data.accounts.spending >= amount) showConfetti();
+      toast((existing ? "Goal updated: " : "Goal added: ") + name, "good", "🎯");
+    });
+
+    const resetDialog = document.getElementById("resetDialog");
+    document.getElementById("openReset").addEventListener("click", () => { resetDialog.hidden = false; });
+    document.getElementById("cancelReset").addEventListener("click", () => { resetDialog.hidden = true; });
+    document.getElementById("confirmReset").addEventListener("click", () => {
+      data = emptyData();
+      saveData();
+      render();
+      resetDialog.hidden = true;
+      toast("All data cleared", "bad", "🗑");
+    });
+
+    const backupCode = document.getElementById("backupCode");
+    const backupMessage = document.getElementById("backupMessage");
+    document.getElementById("copyBackup").addEventListener("click", async () => {
+      const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+      backupCode.value = code;
+      try {
+        await navigator.clipboard.writeText(code);
+        backupMessage.textContent = "Backup code copied. It is also shown above.";
+        toast("Backup code copied", "info", "📋");
+        backupMessage.classList.remove("error");
+      } catch {
+        backupMessage.textContent = "Clipboard unavailable. Select and copy the code shown above.";
+      }
+    });
+    document.getElementById("restoreBackup").addEventListener("click", () => {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(backupCode.value.trim()))));
+        if (!decoded || (!decoded.accounts && !Number.isFinite(Number(decoded.balance))) || !Array.isArray(decoded.history) || !Array.isArray(decoded.tasks)) throw new Error("Invalid backup");
+        data = normalizeData(decoded);
+        saveData();
+        render();
+        backupMessage.textContent = "Backup restored on this device.";
+        toast("Backup restored", "good", "✓");
+        backupMessage.classList.remove("error");
+      } catch {
+        backupMessage.textContent = "That code doesn't look valid. Check it and try again.";
+        backupMessage.classList.add("error");
+      }
+    });
+
+    // History filter tabs + search
+    document.querySelectorAll("#historyTabs .tab").forEach(tab => tab.addEventListener("click", () => {
+      historyFilter = tab.dataset.filter;
+      document.querySelectorAll("#historyTabs .tab").forEach(other => other.setAttribute("aria-pressed", String(other === tab)));
+      renderHistory();
+    }));
+    document.getElementById("historySearch").addEventListener("input", event => {
+      historySearch = event.target.value;
+      renderHistory();
+    });
+
+    // Install as an app (works when the site is opened from a web address, not a file)
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+    let installPrompt = null;
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      installPrompt = event;
+      document.getElementById("installApp").hidden = false;
+    });
+    document.getElementById("installApp").addEventListener("click", async () => {
+      if (!installPrompt) return;
+      installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      installPrompt = null;
+      document.getElementById("installApp").hidden = true;
+      if (choice.outcome === "accepted") toast("Cash Cycle installed", "good", "📱");
+    });
+
+    // Greeting with today's date
+    (() => {
+      const now = new Date();
+      const hour = now.getHours();
+      const hello = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+      document.getElementById("greeting").textContent = hello + " · " + now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+    })();
+
+    // Cursor spotlight on cards
+    document.querySelectorAll(".account-tile, .savings-goal, .panel, .total-box").forEach(card => card.classList.add("spot"));
+    document.addEventListener("pointermove", event => {
+      const card = event.target.closest(".spot");
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mx", (event.clientX - rect.left) + "px");
+      card.style.setProperty("--my", (event.clientY - rect.top) + "px");
+    });
+
+    // Click ripple on buttons
+    document.addEventListener("pointerdown", event => {
+      const button = event.target.closest(".button");
+      if (!button || button.disabled || false) return;
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      ripple.style.width = ripple.style.height = size + "px";
+      ripple.style.left = (event.clientX - rect.left - size / 2) + "px";
+      ripple.style.top = (event.clientY - rect.top - size / 2) + "px";
+      button.append(ripple);
+      ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+    });
+
+    render();
+    if (removedAccountsSetHistory) saveData();
+
+    // Count money up from ฿0 when the page opens
+    function countUpOnLoad() {
+      if (false) return;
+      const ids = ["balanceAmount", "savingsBalance", "spendingBalance", "totalEarned", "totalSpent", "pendingAll", "weekEarnings"];
+      const targets = ids.map(id => {
+        const el = document.getElementById(id);
+        return { el, value: Number(el.textContent.replace(/[^0-9.]/g, "")) || 0 };
+      });
+      targets.forEach(target => { target.el.textContent = formatMoney(0); });
+      const bars = [...document.querySelectorAll("#splitSavings, #splitSpending, .goal-fill")].map(el => {
+        const width = parseFloat(el.style.width) || 0;
+        el.style.transition = "none";
+        el.style.width = "0%";
+        return { el, width };
+      });
+      const percents = [...document.querySelectorAll("#savingsShare, #spendingShare, .goal-percent")].map(el => {
+        const value = Number(el.textContent.replace(/[^0-9.]/g, "")) || 0;
+        el.textContent = "0%";
+        return { el, value };
+      });
+      const delay = 300;
+      const duration = 2000;
+      const start = performance.now() + delay;
+      function tick(now) {
+        const progress = Math.min(Math.max((now - start) / duration, 0), 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        targets.forEach(target => { target.el.textContent = formatMoney(target.value * eased); });
+        bars.forEach(bar => { bar.el.style.width = bar.width * eased + "%"; });
+        percents.forEach(item => { item.el.textContent = Math.round(item.value * eased) + "%"; });
+        if (progress >= 1) bars.forEach(bar => { bar.el.style.transition = ""; });
+        if (progress < 1) {
+          introFrame = setTimeout(() => tick(performance.now()), 16);
+        } else {
+          balanceAmount.classList.remove("bump");
+          void balanceAmount.offsetWidth;
+          balanceAmount.classList.add("bump");
+        }
+      }
+      introFrame = setTimeout(() => tick(performance.now()), 16);
+    }
+    countUpOnLoad();
+
+    // Boxes animate in one by one, and again as you scroll down to them
+    function revealBoxes() {
+      let waiting = [...document.querySelectorAll(".topbar, .balance-card, .account-tile, .savings-goal, .section-heading, .entry-form, .dashboard-column > .section > .panel, .insights, .categories, .badge-grid, .total-box, .transfer-summary, .history-tools, .history-list, details.backup, .reset-zone, .app-footer")];
+      waiting.forEach(box => box.classList.add("reveal"));
+      function show(box, delay) {
+        box.style.setProperty("--d", delay + "ms");
+        setTimeout(() => box.classList.add("in"), 30);
+        setTimeout(() => {
+          box.classList.remove("reveal", "in");
+          box.style.removeProperty("--d");
+        }, delay + 1100);
+      }
+      function check() {
+        const limit = window.innerHeight - 30;
+        let batch = 0;
+        waiting = waiting.filter(box => {
+          const rect = box.getBoundingClientRect();
+          if (rect.top > limit || rect.bottom < 0) return true;
+          show(box, Math.min(batch++, 10) * 80);
+          return false;
+        });
+        if (!waiting.length) {
+          window.removeEventListener("scroll", onScroll);
+          window.removeEventListener("resize", onScroll);
+        }
+      }
+      let pending = false;
+      function onScroll() {
+        if (pending) return;
+        pending = true;
+        setTimeout(() => { pending = false; check(); }, 60);
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      check();
+    }
+    revealBoxes();
+  </script>
+</body>
+</html>
