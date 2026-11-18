@@ -1,5 +1,5 @@
 // Cash Cycle offline support: keeps a copy of the app so it opens without internet.
-const CACHE = "cash-cycle-v5";
+const CACHE = "cash-cycle-v6";
 const FILES = ["./", "./index.html", "./firebase-config.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {
